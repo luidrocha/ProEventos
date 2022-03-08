@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ProEventos.API.Model;
+using ProEventos.API.Data;
 
 namespace ProEventos.API.Controllers
 {
@@ -12,57 +13,35 @@ namespace ProEventos.API.Controllers
     [Route("api/[controller]")]
     public class EventoController : ControllerBase
     {
+        public readonly DataContext _context;
 
-
-        private readonly ILogger<EventoController> _logger;
-
-        public EventoController(ILogger<EventoController> logger)
+        // Cria 2 objetos no formato JSON
+        public EventoController(DataContext context)
         {
+
+            _context = context;
+
 
         }
 
-        // Cria 2 objetos no formato JSON
-        public IEnumerable<Evento> _evento = new Evento[] {
-                new Evento() {
-
-                EventoId=1,
-                Tema= "Desenvolvimento .NET 5 Core Com Angular 12",
-                Local= "Rio de Janeiro",
-                Lote="1º Lote",
-                QtdPessoa=250,
-                DataEvento=DateTime.Now.AddDays(2).ToString("dd/MM/yyyy"),
-                ImagemUrl="foto.png"
-                },
-
-                new Evento() {
-
-                EventoId=2,
-                Tema= "Desenvolvimento com CSHARP e Visual Studio 19",
-                Local= "São Paulo",
-                Lote="2º Lote",
-                QtdPessoa=350,
-                DataEvento=DateTime.Now.AddDays(5).ToString("dd/MM/yyyy"),
-                ImagemUrl="foto1.png"
-                }
 
 
-            };
+
 
 
         [HttpGet]
 
-        public IEnumerable<Evento> Get() // Retorna um array
+        public IEnumerable <Evento> Get() // Retorna um array
         {
 
-            return _evento;
+            return _context.Eventos;
         }
 
         [HttpGet("{id}")]
-
-        public IEnumerable<Evento> GetById(int id) // Retorna um array
+        public Evento GetById(int id) // Retorna um array
         {
 
-            return _evento.Where(evento => evento.EventoId == id);
+            return  _context.Eventos.FirstOrDefault(evento => evento.EventoId==id);
         }
 
 
