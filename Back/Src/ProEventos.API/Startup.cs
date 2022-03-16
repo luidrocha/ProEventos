@@ -28,6 +28,7 @@ namespace ProEventos.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
             services.AddDbContext<DataContext>( context => context.UseSqlite(
                       Configuration.GetConnectionString("Default")) ); // Passa a string de Conexão.
             services.AddControllers();
@@ -52,6 +53,11 @@ namespace ProEventos.API
             app.UseRouting();
 
             app.UseAuthorization();
+
+            // permite que requisição Http possa ser executada, liberando o bloqueio
+            app.UseCors(acesso => acesso.AllowAnyHeader()
+                                        .AllowAnyMethod()
+                                        .AllowAnyOrigin() );
 
             app.UseEndpoints(endpoints =>
             {
