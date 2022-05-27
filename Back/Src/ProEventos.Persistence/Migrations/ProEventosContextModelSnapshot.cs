@@ -132,9 +132,6 @@ namespace ProEventos.Persistence.Migrations
                     b.Property<string>("Nome")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("PalestrandeId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int?>("PalestranteId")
                         .HasColumnType("INTEGER");
 

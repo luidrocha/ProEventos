@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-
 namespace ProEventos.Persistence.Migrations
 {
     public partial class Initial : Migration
@@ -101,8 +100,7 @@ namespace ProEventos.Persistence.Migrations
                     Nome = table.Column<string>(type: "TEXT", nullable: true),
                     URL = table.Column<string>(type: "TEXT", nullable: true),
                     EventoId = table.Column<int>(type: "INTEGER", nullable: true),
-                    PalestranteId = table.Column<int>(type: "INTEGER", nullable: true),
-                    PalestrandeId = table.Column<int>(type: "INTEGER", nullable: true)
+                    PalestranteId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
