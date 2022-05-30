@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProEventos.Domain;
+using ProEventos.Persistence.Contextos;
 using ProEventos.Persistence.IContratos;
 using System.Linq;
 using System.Threading.Tasks;

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProEventos.Domain;
-using ProEventos.Persistence;
+using ProEventos.Persistence.Contextos;
 using ProEventos.Persistence.IContratos;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,6 +14,7 @@ namespace ProEvento.Persistence
         // faz a injeção de Dependencia do contexto.
 
         private readonly ProEventosContext _context;
+        
         public EventoPersistence(ProEventosContext context)
         {
             _context = context;

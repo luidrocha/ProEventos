@@ -1,6 +1,8 @@
-﻿namespace ProEventos.Persistence.IContratos
+﻿using System.Threading.Tasks;
+
+namespace ProEventos.Persistence.IContratos
 {
-    interface IGeralPersistence
+    public interface IGeralPersistence
     {
         //GERAL Metodos genericos que são executados de acordo com o dominio
 
@@ -8,7 +10,7 @@
         void Update<T>(T entity) where T : class;
         void Delete<T>(T entity) where T : class;
         void DeleteRange<T>(T[] entityArray) where T : class;
-
+        Task<bool> SaveChangesAsync() ;
 
     }
 }
