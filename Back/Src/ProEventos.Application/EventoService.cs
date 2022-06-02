@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace ProEventos.Application
 {
-    class EventoService : IEventoService
+    public class EventoService : IEventoService
     {
         public readonly IGeralPersistence _geralPersistence;
         public readonly IEventoPersistence _eventoPersistence;

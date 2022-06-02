@@ -1,13 +1,9 @@
 ﻿using ProEventos.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ProEventos.Application.IContratos
 {
-    interface IEventoService
+    public interface IEventoService
     {
         Task<Evento> AddEventos(Evento model);
         Task<Evento> UpdateEvento(int Id, Evento model);

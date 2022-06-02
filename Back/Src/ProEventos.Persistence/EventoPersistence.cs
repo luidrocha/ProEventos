@@ -5,21 +5,21 @@ using ProEventos.Persistence.IContratos;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ProEvento.Persistence
+namespace ProEventos.Persistence
 {
     // Classe que implenta a interface IProEventosPersistence que tem os metodos Genericospara EVENTOS
 
-    class EventoPersistence : IEventoPersistence
+    public class EventoPersistence : IEventoPersistence
     {
         // faz a injeção de Dependencia do contexto.
 
         private readonly ProEventosContext _context;
-        
+
         public EventoPersistence(ProEventosContext context)
         {
             _context = context;
         }
-               
+
 
         public async Task<Evento[]> GetAllEventoAsync(bool includePalestrantes = false)
         {

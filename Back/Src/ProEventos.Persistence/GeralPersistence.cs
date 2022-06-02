@@ -9,7 +9,7 @@ namespace ProEventos.Persistence
     // Classe que implenta a interface IProEventosPersistence que tem os metodos Genericospara EVENTOS
 
 
-    class GeralPersistence : IGeralPersistence
+    public class GeralPersistence : IGeralPersistence
     {
         private readonly ProEventosContext _context;
 
