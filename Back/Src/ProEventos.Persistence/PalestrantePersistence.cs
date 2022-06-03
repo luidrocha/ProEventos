@@ -27,7 +27,7 @@ namespace ProEventos.Persistence
         {
             IQueryable<Palestrante> query = _context.Palestrantes;
 
-            query = query.Include(pa => pa.RedeSociais);
+            query = query.AsNoTracking().Include(pa => pa.RedeSociais);
 
             if (includeEventos)
             {
@@ -45,7 +45,7 @@ namespace ProEventos.Persistence
         {
             IQueryable<Palestrante> query = _context.Palestrantes;
 
-            query = query.Include(pa => pa.RedeSociais);
+            query = query.AsNoTracking().Include(pa => pa.RedeSociais);
 
             if (includeEventos)
             {
@@ -65,7 +65,7 @@ namespace ProEventos.Persistence
         {
             IQueryable<Palestrante> query = _context.Palestrantes;
 
-            query = query.Include(pa => pa.RedeSociais);
+            query = query.AsNoTracking().Include(pa => pa.RedeSociais);
 
             if (includeEventos)
             {

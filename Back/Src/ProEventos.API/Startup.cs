@@ -29,8 +29,10 @@ namespace ProEventos.API
             services.AddCors();
             services.AddDbContext<ProEventosContext>(context => context.UseSqlite(
             // Passa a string de Conexão
-            Configuration.GetConnectionString("Default"))); 
-            services.AddControllers();
+            Configuration.GetConnectionString("Default")));
+            services.AddControllers() // .AddNewtonsoftJson() quebrar o loop infinito de referencias
+                    .AddNewtonsoftJson(x => x.SerializerSettings
+                    .ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             // Injeção de Dependencia... Toda vez que encontrar
             // a interface IEventoService, injete o service EventoService
             services.AddScoped<IEventoService, EventoService>();

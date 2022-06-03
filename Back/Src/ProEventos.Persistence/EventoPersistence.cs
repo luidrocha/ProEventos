@@ -18,6 +18,10 @@ namespace ProEventos.Persistence
         public EventoPersistence(ProEventosContext context)
         {
             _context = context;
+            
+            // Desta forma a configuração afeta todos os metodos da classe
+            // Faz com que os metodos não prendam o processo do objeto para que outro possa utilizar.
+            //_context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking; 
         }
 
 
@@ -28,8 +32,8 @@ namespace ProEventos.Persistence
             IQueryable<Evento> query = _context.Eventos
                 .Include(ev => ev.Lotes)
                 .Include(ev => ev.RedesSociais);
-
-            query = query.OrderBy(ev => ev.Id);  // ordena pelo Id
+            // AsNoTracking() para não prender o processo da consulta/objeto
+            query = query.AsNoTracking().OrderBy(ev => ev.Id);  // ordena pelo Id
 
             if (includePalestrantes)
             {
@@ -40,14 +44,13 @@ namespace ProEventos.Persistence
 
             return await query.ToArrayAsync();
         }
-
         public async Task<Evento[]> GetAllEventosByTemaAsync(string tema, bool includePalestrantes = false)
         {
             IQueryable<Evento> query = _context.Eventos
                 .Include(ev => ev.Lotes)
                 .Include(ev => ev.RedesSociais);
 
-            query = query.OrderBy(ev => ev.Id);
+            query = query.AsNoTracking().OrderBy(ev => ev.Id);
 
             if (includePalestrantes)
             {
@@ -76,7 +79,7 @@ namespace ProEventos.Persistence
                     .ThenInclude(pe => pe.Palestrante);
             }
 
-            query = query
+            query = query.AsNoTracking()
                 .OrderBy(ev => ev.Id)
                 .Where(ev => ev.Id == eventoId);
 

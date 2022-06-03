@@ -51,6 +51,8 @@ namespace ProEventos.Application
         {
             try
             {
+                // Temos um get que segura o objeto Evento. Dentro do metodo temos que usar o AsNotracking
+
                 var evento = await _eventoPersistence.GetEventoByIdAsync(eventoId, false);
 
                 if (evento == null) return null;

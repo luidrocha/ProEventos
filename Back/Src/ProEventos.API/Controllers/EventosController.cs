@@ -28,6 +28,7 @@ namespace ProEventos.API.Controllers
 
         // Foi usado o IActionResult para RETORNAR , poder usar o retorno dos erros de web como 200, 2001...500
         // poderia ser usado um IEQueryable<Eventos> ou  ActionResult<evento> e ainda poderia trabalhar com os retornos http
+        
         public async Task<IActionResult> Get() // Retorna um array
         {
             try
@@ -47,7 +48,7 @@ namespace ProEventos.API.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{eventoId}")]
         public async Task<IActionResult> GetById(int eventoId) // Retorna um array
         {
             try
@@ -69,7 +70,7 @@ namespace ProEventos.API.Controllers
         }
 
 
-        [HttpGet("{tema}/tema")]
+        [HttpGet("tema/{tema}")]
 
         public async Task<IActionResult> getEventosByTema(string tema)
         {
@@ -95,7 +96,7 @@ namespace ProEventos.API.Controllers
         {
             try
             {
-                var evento = _eventoService.AddEventos(model);
+                var evento = await _eventoService.AddEventos(model);
 
                 if (evento == null) return BadRequest("Erro ao tentar adicionar o Evento");
 
