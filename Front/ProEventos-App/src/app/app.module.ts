@@ -10,13 +10,17 @@ import { EventosComponent } from './eventos/eventos.component';
 import { PalestrantesComponent } from './palestrantes/palestrantes.component';
 import { NavComponent } from './nav/nav.component';
 import { FormsModule } from '@angular/forms';
+import { EventoServices } from './services/eventos.services';
+import { DateTimeFormat_Pipe } from './helpers/DateTimeFormatPipe.pipe';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     EventosComponent,
       PalestrantesComponent,
-      NavComponent
+      NavComponent,
+      DateTimeFormat_Pipe
    ],
 
   imports: [
@@ -25,10 +29,11 @@ import { FormsModule } from '@angular/forms';
     HttpClientModule,
     BrowserAnimationsModule,
     CollapseModule.forRoot(),
-    FormsModule,
-  ],
+    FormsModule
 
-  providers: [],
+  ],
+  // Providers => Permite injetar um servico ou classe , nesse caso esta sendo injetado pelo App.module podemos enxergar em qualquer lugar do projeto.
+  providers: [EventoServices],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
