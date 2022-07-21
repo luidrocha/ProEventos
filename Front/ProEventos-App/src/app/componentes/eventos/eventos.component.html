@@ -1,0 +1,97 @@
+
+<app-Titulo [titulo]="'Eventos'"></app-Titulo>
+
+<div  class="form-inline mb-2">
+  <div class="form-group mb2">
+
+    <!-- Filtro com ngModel não funciona no Form padão, trocar por div -->
+    <input
+    type="text" class="form-control mr-2" placeholder="buscar"
+
+
+    [(ngModel)]="FiltrarLista"
+    >
+    <button class="btn btn-outline-success">Buscar</button>
+
+  </div>
+
+</div>
+<!-- Exibe na tela o que foi digitado -->
+<h3>Filtrar: {{FiltrarLista}}</h3>
+
+<table class="table table-striped">
+  <thead class="thead-dark">
+    <tr>
+      <th>
+        <!--Usamos i class ...fa fa-eye':'fa fa-eye-slash para incluir icone do olho, fonte awersome-->
+        <button class="btn btn-outline-light btn-sm "
+                (click)="ExibirImagem()">
+          <i class="{{!exibirImg?'fa fa-eye':'fa fa-eye-slash'}}">  </i>
+          {{!exibirImg ? 'Exibir': 'Ocultar'}}
+        </button>
+      </th>
+      <th>#</th>
+
+      <th>Tema</th>
+      <th>Local</th>
+      <th>Data</th>
+      <th> Qtd Pessoas</th>
+      <th>Lote</th>
+      <th>Opções </th>
+    </tr>
+  </thead>
+  <!-- Exibe os eventos apenas se existirem  -->
+  <tbody *ngIf="eventos && eventos.length">
+
+    <tr *ngFor="let evento of eventosFiltrados">
+      <!-- binde de propriedades declarados no TS do componente -->
+        <td>
+          <img [collapse]="!exibirImg" src="/assets/{{evento.imagemUrl}} "
+                  [style.width.px]="larguraImg"
+                  [style.margin.px]="margemImg"
+                  [isAnimated]="true"
+              >
+        </td>
+        <td>{{evento.id}}</td>
+        <td> {{evento.tema}} </td>
+        <td>{{evento.local}}</td>
+        <td>{{evento.dataEvento | DateTimeFormatPipe}}</td>
+        <td>{{evento.qtdPessoa}}</td>
+        <td>{{evento.lotes[0].nome}}</td>
+        <td>
+          <!--Coloca o icone de Edit no botão Edit-->
+          <button type="button" class="btn btn-primary btn-sm mr-2" tooltip="Editar">
+            <i class="fa fa-edit"> </i>   Editar    </button>
+        <button type="button" class="btn btn-danger btn-sm mr-2" tooltip="Excluir"
+        (click)="openModal(template)"> <i class="fa fa-trash"> </i> Excluir
+         </button>
+
+      </td>
+
+    </tr>
+
+
+  </tbody>
+  <!-- Só exibe o Footer com a mensagem se não existir Eventos -->
+  <tfoot *ngIf="!eventos">
+    <tr>
+      <td colspan="8" class="text-center">
+        <h4>evento não econtrado ! </h4>
+
+      </td>
+    </tr>
+  </tfoot>
+
+
+
+</table>
+
+<!-- Modal para exclusão   -->
+<ng-template #template>
+  <div class="modal-body text-center">
+    <p>Confirma a deleção deste Evento ?</p>
+    <button type="button" class="btn btn-default" (click)="confirm()" >SIM</button>
+    <button type="button" class="btn btn-primary" (click)="decline()" >NÃO</button>
+  </div>
+</ng-template>
+

@@ -14,11 +14,19 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { EventosComponent } from './eventos/eventos.component';
-import { PalestrantesComponent } from './palestrantes/palestrantes.component';
-import { NavComponent } from './nav/nav.component';
+
 import { EventoServices } from './services/eventos.services';
+import { EventosComponent } from './componentes/eventos/eventos.component';
+import { PalestrantesComponent } from './componentes/palestrantes/palestrantes.component';
+import { NavComponent } from './shared/nav/nav.component';
 import { DateTimeFormat_Pipe } from './helpers/DateTimeFormatPipe.pipe';
+import { TituloComponent } from './shared/Titulo/Titulo.component';
+import { PerfilComponent } from './componentes/perfil/perfil.component';
+import { DashboardComponent } from './componentes/dashboard/dashboard.component';
+import { ContatosComponent } from './componentes/contatos/contatos.component';
+
+
+
 
 
 @NgModule({
@@ -27,7 +35,11 @@ import { DateTimeFormat_Pipe } from './helpers/DateTimeFormatPipe.pipe';
     EventosComponent,
       PalestrantesComponent,
       NavComponent,
-      DateTimeFormat_Pipe
+      DateTimeFormat_Pipe,
+      TituloComponent,
+      PerfilComponent,
+      DashboardComponent,
+      ContatosComponent
    ],
 
   imports: [
@@ -42,7 +54,7 @@ import { DateTimeFormat_Pipe } from './helpers/DateTimeFormatPipe.pipe';
     BsDropdownModule.forRoot(),
     ModalModule.forRoot(),
     ToastrModule.forRoot({
-                              timeOut: 50000,
+                              timeOut: 5000,
                               positionClass: 'toast-bottom-right',
                               preventDuplicates: true,
                               progressBar: true,
