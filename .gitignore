@@ -484,12 +484,16 @@ yarn-error.log
 !.vscode/extensions.json
 .history/*
 
+
 # Miscellaneous
-.angular/cache
+/.angular/cache
+/cache
+/.firebase/
 .sass-cache/
 /connect.lock
 /coverage
 /libpeerconnection.log
+firebase-debug.log
 testem.log
 /typings
 
