@@ -15,15 +15,23 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { EventoServices } from './services/eventos.services';
-import { EventosComponent } from './componentes/eventos/eventos.component';
-import { PalestrantesComponent } from './componentes/palestrantes/palestrantes.component';
 import { NavComponent } from './shared/nav/nav.component';
 import { DateTimeFormat_Pipe } from './helpers/DateTimeFormatPipe.pipe';
 import { TituloComponent } from './shared/Titulo/Titulo.component';
-import { PerfilComponent } from './componentes/perfil/perfil.component';
 import { DashboardComponent } from './componentes/dashboard/dashboard.component';
+
 import { ContatosComponent } from './componentes/contatos/contatos.component';
+import { PalestrantesComponent } from './componentes/palestrantes/palestrantes.component';
+
+import { EventoServices } from './services/eventos.services';
+import { EventosComponent } from './componentes/eventos/eventos.component';
+import { EventoDetalheComponent } from './componentes/eventos/evento-detalhe/evento-detalhe.component';
+import { EventoListaComponent } from './componentes/eventos/evento-lista/evento-lista.component';
+
+import { UserComponent } from './componentes/user/user.component';
+import { PerfilComponent } from './componentes/user/perfil/perfil.component';
+import { LoginComponent } from './componentes/user/login/login.component';
+import { RegistrarComponent } from './componentes/user/registrar/registrar.component';
 
 
 
@@ -39,7 +47,12 @@ import { ContatosComponent } from './componentes/contatos/contatos.component';
       TituloComponent,
       PerfilComponent,
       DashboardComponent,
-      ContatosComponent
+      ContatosComponent,
+      EventoDetalheComponent,
+      EventoListaComponent,
+      UserComponent,
+      LoginComponent,
+      RegistrarComponent
    ],
 
   imports: [

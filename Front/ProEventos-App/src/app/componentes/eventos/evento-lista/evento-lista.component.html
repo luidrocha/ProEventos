@@ -1,0 +1,118 @@
+<!--  Componente titulo em SHARED -->
+<!-- <app-Titulo [titulo]="'Eventos'" [iconClass]="'fa fa-calendar-alt'" [botaoListar]=true></app-Titulo>  -->
+
+<!-- p-3 afasta dentro do card -->
+<div class="card rounded shadown-sm p-3">
+  <div class="d-flex">
+    <div class="flex-fill pr-3">
+      <div class="form-group mb2">
+        <div class="input-group-prepend">
+          <div class="input-group-text"> Filtro: </div>
+
+          <!-- Filtro com ngModel não funciona no Form padão, trocar por div -->
+        <input type="text" class="form-control " placeholder="Filtrar por tema e local"
+        [(ngModel)]="FiltrarLista">
+
+        </div>
+
+
+        <!-- Botão de Busca não utilizado, busca automatica por digitaçao -->
+        <!--  <button class="btn btn-outline-success ">Buscar</button> -->
+
+      </div>
+
+    </div>
+
+    <div>
+      <!-- Usar o nome da rota em routerlink e não o nome do component -->
+      <a class="d-flex btn btn-outline-primary"  routerLink="/eventos/detalhes">
+        <i class="fa fa-plus-circle my-1">  </i>
+<!-- esconde a palavra Novo  e mostra se a tela for small-->
+        <b class="ml-1 d-none d-sm-block"> Novo</b>
+
+      </a>
+
+    </div>
+
+  </div>
+
+
+
+
+<!-- Exibe na tela o que foi digitado -->
+<h3>Filtrar: {{FiltrarLista}}</h3>
+
+<table class="table table-striped table-hover">
+  <thead class="thead-dark">
+    <tr>
+      <th class="d-none d-md-table-cell">
+        <!--Usamos i class ...fa fa-eye':'fa fa-eye-slash para incluir icone do olho, fonte awersome-->
+        <button class="btn btn-outline-light btn-sm " (click)="ExibirImagem()">
+          <i class="{{!exibirImg?'fa fa-eye':'fa fa-eye-slash'}}"> </i>
+          {{!exibirImg ? 'Exibir': 'Ocultar'}}
+        </button>
+      </th>
+      <th>#</th>
+
+      <th>Tema</th>
+      <!-- a classe esconde o local mas exibe em dispositivos medios. Se tratando de tablea
+      usamos  d-md-table-cell para exibir-->
+      <th class="d-none d-md-table-cell">Local</th>
+      <th>Data</th>
+      <th class="d-none d-md-table-cell"> Qtd Pessoas</th>
+      <th class="d-none d-md-table-cell">Lote</th>
+      <th>Opções </th>
+    </tr>
+  </thead>
+  <!-- Exibe os eventos apenas se existirem  -->
+  <tbody *ngIf="eventos && eventos.length">
+  <!-- pega o id e passa pra o metodo no TypeScript -->
+    <tr *ngFor="let evento of eventosFiltrados" (click)="detalheEvento(evento.id)" style="cursor: pointer;">
+      <!-- binde de propriedades declarados no TS do componente -->
+      <td class="d-none d-md-table-cell">
+        <img [collapse]="!exibirImg" src="/assets/{{evento.imagemUrl}} " [style.width.px]="larguraImg"
+          [style.margin.px]="margemImg" [isAnimated]="true">
+      </td>
+      <td>{{evento.id}}</td>
+      <td> {{evento.tema}} </td>
+      <td class="d-none d-md-table-cell">{{evento.local}}</td>
+      <td>{{evento.dataEvento | DateTimeFormatPipe}}</td>
+      <td class="d-none d-md-table-cell">{{evento.qtdPessoa}}</td>
+      <td class="d-none d-md-table-cell" >{{evento.lotes[0].nome}}</td>
+      <td>
+        <!--Coloca o icone de Edit no botão Edit-->
+        <button type="button" class="d-none d-md-block btn btn-primary btn-sm mr-2" tooltip="Editar">
+          <i class="fa fa-edit"> </i> Editar </button>
+        <button type="button" class="btn btn-danger btn-sm mr-2" tooltip="Excluir" (click)="openModal(template)"> <i
+            class="fa fa-trash"> </i> Excluir
+        </button>
+
+      </td>
+
+    </tr>
+
+
+  </tbody>
+  <!-- Só exibe o Footer com a mensagem se não existir Eventos -->
+  <tfoot *ngIf="!eventos">
+    <tr>
+      <td colspan="8" class="text-center">
+        <h4>evento não econtrado ! </h4>
+
+      </td>
+    </tr>
+  </tfoot>
+
+
+
+</table>
+
+</div>
+<!-- Modal para exclusão   -->
+<ng-template #template>
+  <div class="modal-body text-center">
+    <p>Confirma a deleção deste Evento ?</p>
+    <button type="button" class="btn btn-default" (click)="confirm()">SIM</button>
+    <button type="button" class="btn btn-primary" (click)="decline()">NÃO</button>
+  </div>
+</ng-template>
