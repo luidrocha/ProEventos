@@ -8,8 +8,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 
 import { filter } from 'rxjs';
-import { Evento } from 'src/app/model/Evento';
-import { EventoServices } from 'src/app/services/eventos.services';
+import { Evento } from '@app/model/Evento';
+import { EventoServices } from '@app/services/eventos.services';
 
 
 

@@ -1,15 +1,49 @@
 import { Component, OnInit } from '@angular/core';
+import {
+  AbstractControlOptions,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+import { ValidatorField } from '@app/helpers/ValidatorField';
 
 @Component({
   selector: 'app-registrar',
   templateUrl: './registrar.component.html',
-  styleUrls: ['./registrar.component.scss']
+  styleUrls: ['./registrar.component.scss'],
 })
 export class RegistrarComponent implements OnInit {
-
-  constructor() { }
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
+    this.validationRegister();
   }
 
+  formRegister!: FormGroup;
+
+  public get f(): any {
+    return this.formRegister.controls;
+  }
+
+  public validationRegister(): any {
+    const formOptions: AbstractControlOptions = {
+      validators: ValidatorField.validaSenha('senha', 'confirmeSenha'),
+    };
+
+    this.formRegister = this.fb.group(
+      {
+        fnome: ['', Validators.required],
+        lnome: ['', Validators.required],
+        email: ['', [Validators.required, Validators.email]],
+        usuario: ['', Validators.required],
+        senha: ['', [Validators.required, Validators.minLength(6)]],
+        confirmeSenha: ['', [Validators.required, Validators.minLength(6)]],
+        checkOption: ['', Validators.required],
+      },
+      formOptions
+    );
+  }
+  formDebug() {
+    console.log(this.formRegister.value);
+  }
 }

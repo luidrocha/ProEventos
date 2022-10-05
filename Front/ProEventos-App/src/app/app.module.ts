@@ -2,7 +2,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormControl, } from '@angular/forms';
 
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -37,6 +37,7 @@ import { RegistrarComponent } from './componentes/user/registrar/registrar.compo
 
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -52,7 +53,8 @@ import { RegistrarComponent } from './componentes/user/registrar/registrar.compo
       EventoListaComponent,
       UserComponent,
       LoginComponent,
-      RegistrarComponent
+      RegistrarComponent,
+
    ],
 
   imports: [
@@ -61,7 +63,9 @@ import { RegistrarComponent } from './componentes/user/registrar/registrar.compo
     HttpClientModule,
     BrowserAnimationsModule,
     CollapseModule.forRoot(),
+    ReactiveFormsModule,
     FormsModule,
+
                             // forRoot() foi usado para que se necessário passar parametro
     TooltipModule.forRoot(),
     BsDropdownModule.forRoot(),

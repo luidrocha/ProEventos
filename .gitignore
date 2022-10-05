@@ -487,7 +487,8 @@ yarn-error.log
 
 # Miscellaneous
 /.angular/cache
-/cache
+\.angular\cache
+/.cache
 /.firebase/
 .sass-cache/
 /connect.lock
