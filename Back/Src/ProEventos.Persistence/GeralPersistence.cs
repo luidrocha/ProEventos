@@ -20,13 +20,13 @@ namespace ProEventos.Persistence
         {
             _context = context;
         }
-        public void Add<T>(T entity) where T : class
+        public void Add<T> (T entity) where T : class
         {
             _context.Add(entity);
         }
-        public void Update<T>(T entity) where T : class
+        public void Update<T> (T entity) where T : class
         {
-            _context.Update(entity);
+            _context.Update (entity);
         }
 
         public void Delete<T>(T entity) where T : class

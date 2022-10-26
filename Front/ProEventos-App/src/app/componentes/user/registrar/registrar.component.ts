@@ -13,6 +13,7 @@ import { ValidatorField } from '@app/helpers/ValidatorField';
   styleUrls: ['./registrar.component.scss'],
 })
 export class RegistrarComponent implements OnInit {
+
   constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
@@ -37,11 +38,9 @@ export class RegistrarComponent implements OnInit {
         email: ['', [Validators.required, Validators.email]],
         usuario: ['', Validators.required],
         senha: ['', [Validators.required, Validators.minLength(6)]],
-        confirmeSenha: ['', [Validators.required, Validators.minLength(6)]],
-        checkOption: ['', Validators.required],
-      },
-      formOptions
-    );
+        confirmeSenha: ['', Validators.required],
+        checkOption: ['', Validators.required]
+      }, formOptions  );
   }
   formDebug() {
     console.log(this.formRegister.value);

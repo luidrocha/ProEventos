@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System;
 using Microsoft.AspNetCore.Http;
+using ProEventos.Application.Dtos;
 
 namespace ProEventos.API.Controllers
 {
@@ -33,10 +34,12 @@ namespace ProEventos.API.Controllers
         {
             try
             {
-                var eventos = await _eventoService.GetAllEventosAsync(true); // true para que vinha os Palestrantes
+                var eventos = await _eventoService.GetAllEventosAsync(true); // true para que venha os Palestrantes
 
-                if (eventos == null) return NotFound("Nenhum evento encontrado."); // StatusCode erro 404
+                // poderia ter usado NotFound("Nenhum evento encontrado."); // StatusCode erro 404
+                if (eventos == null) return NoContent(); //representa o mesmo codigo acima, porém, mensagem padrão do HTTP.
 
+               
                 return Ok(eventos); //StatusCode 200
             }
             catch (Exception ex)
@@ -55,7 +58,7 @@ namespace ProEventos.API.Controllers
             {
                 var evento = await _eventoService.GetEventoByIdAsync(eventoId, true);
 
-                if (evento == null) return NotFound("Nenhum evento com o Id encontrado.");
+                if (evento == null) return NoContent();  //NotFound("Nenhum evento com o Id encontrado.");
 
                 return Ok(evento);
 
@@ -78,7 +81,7 @@ namespace ProEventos.API.Controllers
             {
                 var eventos = await _eventoService.GetAllEventosByTemaAsync(tema, true);
 
-                if (eventos == null) return NotFound("Nennhum evento com o tema eoncontrado.");
+                if (eventos == null) return NoContent(); //NotFound("Nennhum evento com o tema eoncontrado.");
 
                 return Ok(eventos);
             }
@@ -92,7 +95,7 @@ namespace ProEventos.API.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Post(Evento model)
+        public async Task<IActionResult> Post(EventoDto model)
         {
             try
             {
@@ -113,7 +116,7 @@ namespace ProEventos.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, Evento model)
+        public async Task<IActionResult> Put(int id, EventoDto model)
         {
 
             try

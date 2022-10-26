@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -7,11 +9,16 @@ using System.Threading.Tasks;
 
 namespace ProEventos.Domain
 {
+    // [Table("tabEventosDetalhes")] // Define o nome da Tabela
     public class Evento
     {
+       //[Key] deve-se usar se o campo de ID tiver nome diferente como CodigoID, IdProduto
         public int Id { get; set; }
         public string Local { get; set; }
         public DateTime? DataEvento { get; set; } // ? = pode ser nullo
+        // Campo que não mapeado para o banco de dados. Sera usado para exibição. Não vai para tabela
+        [NotMapped]
+        public int ContagemDias { get; set; }
         public string Tema { get; set; }
         public int QtdPessoa { get; set; }
         public string ImagemUrl { get; set; } 

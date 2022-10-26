@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,6 +15,7 @@ namespace ProEventos.Domain
         public DateTime? DataFim { get; set; }
         public int Quantidade { get; set; }
         public Evento Evento { get; set; }
+        //[ForeignKey (EventosDetalhes)] - Define a chave estrangeira 
         public int EventoId { get; set; } // chave estrangeira do evento.
 
         

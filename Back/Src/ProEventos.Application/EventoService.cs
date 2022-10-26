@@ -4,6 +4,8 @@ using System;
 using System.Threading.Tasks;
 using ProEventos.Application.IContratos;
 using System.Linq;
+using AutoMapper;
+using ProEventos.Application.Dtos;
 
 namespace ProEventos.Application
 {
@@ -11,31 +13,36 @@ namespace ProEventos.Application
     {
         public readonly IGeralPersistence _geralPersistence;
         public readonly IEventoPersistence _eventoPersistence;
+        public readonly IMapper _mapper;
 
-
-        public EventoService(IGeralPersistence geralPersistence, IEventoPersistence eventoPersistence)
-        {
-
+        public EventoService(IGeralPersistence geralPersistence, 
+                            IEventoPersistence eventoPersistence,
+                            IMapper mapper )
+        { 
+            
             _geralPersistence = geralPersistence;
             _eventoPersistence = eventoPersistence;
-
-
-
+            _mapper = mapper;
         }
 
         // Adiciona o evento e retorno o evento para utilização, caso queira..
 
-        public async Task<Evento> AddEventos(Evento model)
+        public async Task<EventoDto> AddEventos(EventoDto model)
         {
+            
             try
             {
                 // Adiciona um objeto do tipo Evento que chega em model
+                
+                var evento = _mapper.Map<Evento>(model);  // Mapeia de model para Entidade
 
-                _geralPersistence.Add<Evento>(model);
+                _geralPersistence.Add<Evento>(evento);
+
                 if (await _geralPersistence.SaveChangesAsync()) // Retorna True se foi salvo
                 {
-                    return await _eventoPersistence.GetEventoByIdAsync(model.Id); // pega o evento que acabou de gravar
+                   var eventoRetorno = await _eventoPersistence.GetEventoByIdAsync(evento.Id); // pega o evento que acabou de gravar
 
+                    return _mapper.Map<EventoDto>(eventoRetorno); // Mapeia de Entidade para Model
                 }
                 return null;
 
@@ -47,26 +54,31 @@ namespace ProEventos.Application
             };
         }
 
-        public async Task<Evento> UpdateEvento(int eventoId, Evento model)
+        public async Task<EventoDto> UpdateEvento(int eventoId, EventoDto model)
         {
             try
             {
                 // Temos um get que segura o objeto Evento. Dentro do metodo temos que usar o AsNotracking
 
-                var evento = await _eventoPersistence.GetEventoByIdAsync(eventoId, false);
+              
+
+                var evento  = await _eventoPersistence.GetEventoByIdAsync(eventoId, false);
 
                 if (evento == null) return null;
 
                 model.Id = eventoId;
+                
+                _mapper.Map(model, evento); // Mapeamento de objetos e não classes... ou entidades.
 
-
-                // Atualiza o objeto, Evento
-                _geralPersistence.Update(model);
+                 // Atualiza o objeto, Evento
+                _geralPersistence.Update<Evento>(evento);
 
                 // Retorna true se for gravado
                 if (await _geralPersistence.SaveChangesAsync())
                 {
-                    return await _eventoPersistence.GetEventoByIdAsync(model.Id, false);
+                    var eventoRetorno = await _eventoPersistence.GetEventoByIdAsync(evento.Id, false);
+
+                    return _mapper.Map<EventoDto>(eventoRetorno);
                 }
 
                 return null;
@@ -90,7 +102,7 @@ namespace ProEventos.Application
             {
                 var evento = await _eventoPersistence.GetEventoByIdAsync(eventoId, false);
 
-                if (evento == null) // esse ponto deveria retornar um boll
+                if (evento == null) // nesse ponto deveria retornar um boll
                 {
                     // Levanta a exceção para o controller tratar
 
@@ -108,7 +120,7 @@ namespace ProEventos.Application
             }
         }
 
-        public async Task<Evento[]> GetAllEventosAsync(bool includePalestrantes = false)
+        public async Task<EventoDto[]> GetAllEventosAsync(bool includePalestrantes = false)
         {
 
             try
@@ -117,7 +129,9 @@ namespace ProEventos.Application
 
                 if (eventos == null) return null;
 
-                return eventos;
+                var resultado = _mapper.Map<EventoDto[]>(eventos);
+
+                return resultado;
 
             }
             catch (Exception ex)
@@ -129,7 +143,7 @@ namespace ProEventos.Application
         }
 
 
-        public async Task<Evento[]> GetAllEventosByTemaAsync(string tema, bool includePalestrantes = false)
+        public async Task<EventoDto[]> GetAllEventosByTemaAsync(string tema, bool includePalestrantes = false)
         {
             try
             {
@@ -137,7 +151,9 @@ namespace ProEventos.Application
 
                 if (eventos == null) return null;
 
-                return eventos;
+                var resultado = _mapper.Map<EventoDto[]>(eventos);
+
+                return resultado;
 
             }
             catch (Exception ex)
@@ -149,15 +165,21 @@ namespace ProEventos.Application
         }
 
 
-        public async Task<Evento> GetEventoByIdAsync(int eventoId, bool includePalestrantes = false)
+        public async Task<EventoDto> GetEventoByIdAsync(int eventoId, bool includePalestrantes = false)
         {
             try
             {
-                var eventos = await _eventoPersistence.GetEventoByIdAsync(eventoId, includePalestrantes);
+                var evento = await _eventoPersistence.GetEventoByIdAsync(eventoId, includePalestrantes);
     
-            if (eventos == null) return null;
+            if (evento == null) return null;
 
-                return eventos;
+                // Dto dATA tRANSFER oBJECT
+                // sendo retornado - somente os campos desejados sem expor a classe
+                // Mapear para EventoDtos o valor retornado por eventos.
+
+                var resultado = _mapper.Map<EventoDto>(evento);
+                
+                return resultado;
 
             }
             catch (Exception ex)

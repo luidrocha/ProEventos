@@ -1,7 +1,7 @@
 <app-Titulo [titulo]="'Perfil'"> </app-Titulo>
 
 <div class="card rouded shadow-sm ">
-<form [formGroup]="formPerfil">
+<form [formGroup]="formPerfil " (ngSubmit)="onSubmit()">
 	<div class="row p-3">
 		<div class="col-lg-3 pt-1">
 			<div class="card mb-3">
@@ -166,9 +166,8 @@
              minimo 6 caracteres
           </div>
           <div *ngIf="f.confirmeSenha.errors?.validaSenha" class="invalid-feedback">
-            Repetir senha é obrigatorio
+            repetir senha é obrigatorio
           </div>
-
 
 				</div>
 			</div>
@@ -176,7 +175,8 @@
 	</div>
 	<div class="card-footer">
 		<div class="d-flex">
-			<button class="btn btn-outline-secondary mr-auto border">
+<!-- passando $event para não fazer refresh -->
+      <button (click)="formReset($event)" class="btn btn-outline-secondary mr-auto border">
 				Cancelar Alteração
 			</button>
 			<button class="btn btn-success">

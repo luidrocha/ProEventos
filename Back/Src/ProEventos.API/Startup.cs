@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,8 @@ using ProEventos.Application.IContratos;
 using ProEventos.Persistence.Contextos;
 using ProEventos.Persistence.IContratos;
 using ProEventos.Persistence;
+using AutoMapper;
+
 
 
 namespace ProEventos.API
@@ -27,6 +30,9 @@ namespace ProEventos.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
+            // Pega a classe Profile para fazer o automapper
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            
             services.AddDbContext<ProEventosContext>(context => context.UseSqlite(
             // Passa a string de Conexão
             Configuration.GetConnectionString("Default")));
