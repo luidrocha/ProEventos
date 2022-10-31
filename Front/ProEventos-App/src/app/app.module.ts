@@ -12,6 +12,11 @@ import { ToastrModule } from 'ngx-toastr';
 //import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { NgxSpinnerModule } from 'ngx-spinner';
 
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { defineLocale } from 'ngx-bootstrap/chronos';
+import { ptBrLocale } from 'ngx-bootstrap/locale'
+
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
@@ -33,7 +38,9 @@ import { PerfilComponent } from './componentes/user/perfil/perfil.component';
 import { LoginComponent } from './componentes/user/login/login.component';
 import { RegistrarComponent } from './componentes/user/registrar/registrar.component';
 
+// configura o idioma do DATEPICKER
 
+defineLocale('pt-br', ptBrLocale);
 
 
 
@@ -65,11 +72,13 @@ import { RegistrarComponent } from './componentes/user/registrar/registrar.compo
     CollapseModule.forRoot(),
     ReactiveFormsModule,
     FormsModule,
+    
 
                             // forRoot() foi usado para que se necessário passar parametro
     TooltipModule.forRoot(),
     BsDropdownModule.forRoot(),
     ModalModule.forRoot(),
+    BsDatepickerModule.forRoot(),
     ToastrModule.forRoot({
                               timeOut: 5000,
                               positionClass: 'toast-bottom-right',

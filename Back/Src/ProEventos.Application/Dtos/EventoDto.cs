@@ -6,7 +6,9 @@ namespace ProEventos.Application.Dtos
     public class EventoDto
     {
         public int Id { get; set; }
-        [Required]
+        [Required(ErrorMessage = "campo {0} é obrigatório"),
+         StringLength(30, MinimumLength = 5,
+                          ErrorMessage = "o preenchimento do campo {0} deve estar entre 5 e 50 caracteres")]
         public string Local { get; set; }
         [Required(ErrorMessage = "o campo {0} é Obrigatorio dd/MM/aaaa")]
         public string DataEvento { get; set; } // ? = pode ser nullo
@@ -19,7 +21,7 @@ namespace ProEventos.Application.Dtos
         public string Tema { get; set; }
 
         [Display(Name = "qtd pessoas"),
-         Range(1, 5000, ErrorMessage = "o campo {0} deve está entre 1 e 5000")]
+         Range(1, 500, ErrorMessage = "o campo {0} deve está entre 1 e 500")]
         public int QtdPessoa { get; set; }
 
         [Display(Name = "Caminho imagem"),
@@ -31,8 +33,9 @@ namespace ProEventos.Application.Dtos
         [Required(ErrorMessage = "campom {0} é obrigatório"),
         Phone(ErrorMessage = "o campo {0} contém caracter inválido")]
         public string Telefone { get; set; }
+       
         [Required(ErrorMessage = "campo {0} é obrigatório"),
-        Display(Name = "e-mail"),
+         Display(Name = "e-mail"),
         EmailAddress(ErrorMessage = "campo {0} preenchido com formato inválido")]
         public string Email { get; set; }
 
