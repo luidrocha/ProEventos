@@ -17,6 +17,7 @@ import { EventoServices } from '@app/services/eventos.services';
 })
 export class EventoDetalheComponent implements OnInit {
   form!: FormGroup;
+  estadoSalvar = 'post';
 
   // inicia a variavel com um obj vazio do tipo Evento
   evento = {} as Evento;
@@ -93,6 +94,7 @@ export class EventoDetalheComponent implements OnInit {
     const paramId = this.router.snapshot.paramMap.get('id');
     console.log("Captura " + paramId);
     if (paramId !== null) {
+      this.estadoSalvar = 'put';
       this.spinner.show();
       // + converte para numerico
       this.eventoService.getEventoById(+paramId).subscribe({
@@ -113,5 +115,49 @@ export class EventoDetalheComponent implements OnInit {
 
       });
     }
+  }
+
+  public salvarAlteracao(): void {
+
+    if (this.estadoSalvar=='post') {
+            if (this.form.valid) {
+              // Verifica se o formulario é valido e usando o spread (...) copia
+              // usando o spread substitui todo o valor de evento, até o id.
+              this.evento = { ...this.form.value }
+
+              this.spinner.show();
+              this.eventoService.postEvento(this.evento).subscribe(
+                () => { this.toastr.success(`Evento salvo com sucesso`, `Sucesso!`) },
+                (error: any) => {
+                  console.error(error);
+                  this.spinner.hide();
+                  this.toastr.error(`Erro ao salvar o evento `, `Erro!`);
+
+                },
+                () => { this.spinner.hide(); }
+              )
+            }
+    } else {
+
+      if (this.form.valid) {
+        // Verifica se o formulario é valido e usando o spread (...) copia
+        // essa linha diz para adicionar um id que vem do evento.id
+        this.evento = {id: this.evento.id, ...this.form.value }
+
+        this.spinner.show();
+        this.eventoService.putEvento(this.evento.id, this.evento).subscribe(
+          () => { this.toastr.success(`Evento atualizado com sucesso`, `Sucesso!`) },
+          (error: any) => {
+            console.error(error);
+            this.spinner.hide();
+            this.toastr.error(`Erro ao atualizar o evento `, `Erro!`);
+
+          },
+          () => { this.spinner.hide(); }
+        )
+      }
+      }
+   
+
   }
 }

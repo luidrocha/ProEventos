@@ -122,8 +122,8 @@
             Cancelar Alteração
           </button>
           <!-- Disbled so habilita o botão se o status do form for VALIDO, PADRAO E INVALIDO -->
-          <button class="btn btn-success " [disabled]="!form.valid">
-            <!-- <span class="spinner-border spinner-border-sm mr-1"></span> -->
+          <button class="btn btn-success " [disabled]="!form.valid" (click)="salvarAlteracao()">
+             <!--<span class="spinner-border spinner-border-sm mr-1"></span>--> 
             Salvar Evento
           </button>
         </div>
