@@ -146,7 +146,7 @@ namespace ProEventos.API.Controllers
                 // Usamos uma condição TERNARIA
 
                 return await _eventoService.DeleteEvento(id)
-                     ? Ok("Deletado")
+                     ? Ok(new { message = "Deletado" }) // retorna um obj com a chave Deletado
                      : BadRequest("Erro ao excluir. Não deletado.");
               
             }

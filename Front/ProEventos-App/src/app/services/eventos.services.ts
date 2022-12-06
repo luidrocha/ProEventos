@@ -38,8 +38,28 @@ export class EventoServices {
   // retorna um obj
 
   public getEventoById(id: number): Observable<Evento> {
+   
+    //const teste = this.http.get<Evento>(`${this.baseURL}/{'id'}`);
+    //console.log(teste);
 
-    return this.http.get<Evento>('${this.baseURL}/{id/id');
+    return this.http.get<Evento>(`${this.baseURL}/${id}`);
+  }
+
+  // faz passo o evento e retorna o evento
+  public postEvento(evento: Evento): Observable<Evento> {
+    return this.http.post<Evento>(this.baseURL, evento);
+  }
+
+  // Faz a atualização da informação no caso, Evento
+
+  public putEvento(id : number, evento: Evento): Observable<Evento> {
+    return this.http.put<Evento>(`${this.baseURL}/${id}`,evento);
+  }
+
+  // Delete recebe de retorno uma string informando se foi deletado ou não
+
+  public deleteEvento(id: number, ): Observable<any> {
+    return this.http.delete(`${this.baseURL}/${id}`);
   }
 
 

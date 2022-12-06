@@ -2,9 +2,9 @@
   <!-- formGroup faz a referencia com o metodo de validação dos campos -->
 
   <form [formGroup]="form">
-    <p> Form Debug</p>
+    <!--<p> Form Debug</p>
     <p> {{form.value | json}}</p>
-    <p>Status : {{form.status| json}}</p>
+    <p>Status : {{form.status| json}}</p>-->
 
     <div class="p-3">
       <div class="form-row">
@@ -47,6 +47,7 @@
         <div class="form-group col-md-4">
           <label>Data e Hora</label>
           <input type="datetime" class="form-control is-invalid"
+                 value="{{evento.dataEvento|DateTimeFormatPipe}}"
                  bsDatepicker
                  [bsConfig]="dpConfig"
                 
