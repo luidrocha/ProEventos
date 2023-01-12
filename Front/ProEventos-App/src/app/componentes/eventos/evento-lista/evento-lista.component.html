@@ -28,15 +28,9 @@
         <i class="fa fa-plus-circle my-1"> </i>
         <!-- esconde a palavra Novo  e mostra se a tela for small-->
         <b class="ml-1 d-none d-sm-block" > Novo</b>
-
       </a>
-
     </div>
-
   </div>
-
-
-
 
   <!-- Exibe na tela o que foi digitado -->
   <h3>Filtrar: {{FiltrarLista}}</h3>
@@ -75,15 +69,17 @@
         <td>{{evento.id}}</td>
         <td> {{evento.tema}} </td>
         <td class="d-none d-md-table-cell">{{evento.local}}</td>
-        <td>{{evento.dataEvento | DateTimeFormatPipe}}</td>
+        <td>{{evento.dataEvento| DateTimeFormatPipe}}</td>
         <td class="d-none d-md-table-cell">{{evento.qtdPessoa}}</td>
         <td class="d-none d-md-table-cell">{{evento.lotes[0]?.nome}}</td>
         <td>
           <!--Coloca o icone de Edit no botão Edit-->
           <button type="button" class="d-none d-md-block btn btn-primary btn-sm mr-2" tooltip="Editar">
             <i class="fa fa-edit"> </i> Editar </button>
-          <button type="button" class="btn btn-danger btn-sm mr-2" tooltip="Excluir" (click)="openModal($event, template, evento.id)"> <i
-              class="fa fa-trash"> </i> Excluir
+          <button type="button" class="btn btn-danger btn-sm mr-2" tooltip="Excluir"
+             (click)="openModal($event, template, evento.id)">
+            <i class="fa fa-trash"> </i>
+            Excluir
           </button>
 
         </td>

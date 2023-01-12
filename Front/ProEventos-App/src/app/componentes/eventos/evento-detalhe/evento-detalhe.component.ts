@@ -17,6 +17,7 @@ import { EventoServices } from '@app/services/eventos.services';
 })
 export class EventoDetalheComponent implements OnInit {
   form!: FormGroup;
+  // Se o botão novo for clicado carrega o form e o
   estadoSalvar = 'post';
 
   // inicia a variavel com um obj vazio do tipo Evento
@@ -44,6 +45,7 @@ export class EventoDetalheComponent implements OnInit {
     return this.form.controls;
   }
 
+  // faz as configurações do DatePicker
   get dpConfig(): any {
 
     return {
@@ -93,8 +95,9 @@ export class EventoDetalheComponent implements OnInit {
   public carregarEvento(): void {
     const paramId = this.router.snapshot.paramMap.get('id');
     console.log("Captura " + paramId);
+
     if (paramId !== null) {
-      this.estadoSalvar = 'put';
+      this.estadoSalvar = 'put'; // put = Update, Atualizar
       this.spinner.show();
       // + converte para numerico
       this.eventoService.getEventoById(+paramId).subscribe({
@@ -118,46 +121,25 @@ export class EventoDetalheComponent implements OnInit {
   }
 
   public salvarAlteracao(): void {
+    this.spinner.show();
+    // Verifica se o formulario é valido e usando o spread (...) copia
+    // usando o spread substitui todo o valor de evento, até o id.
+    if (this.form.valid) {
+      this.evento = (this.estadoSalvar == 'post')
+        ? { ...this.form.value }
+        : { id: this.evento.id, ...this.form.value };
 
-    if (this.estadoSalvar=='post') {
-            if (this.form.valid) {
-              // Verifica se o formulario é valido e usando o spread (...) copia
-              // usando o spread substitui todo o valor de evento, até o id.
-              this.evento = { ...this.form.value }
+      this.eventoService[this.estadoSalvar](this.evento).subscribe(
+        () => { this.toastr.success(`Evento salvo com sucesso`, `Sucesso!`) },
+        (error: any) => {
+          console.error(error);
+          this.spinner.hide();
+          this.toastr.error(`Erro ao salvar o evento `, `Erro!`)
+        },
+        () => { this.spinner.hide() }
+      );
+    }
 
-              this.spinner.show();
-              this.eventoService.postEvento(this.evento).subscribe(
-                () => { this.toastr.success(`Evento salvo com sucesso`, `Sucesso!`) },
-                (error: any) => {
-                  console.error(error);
-                  this.spinner.hide();
-                  this.toastr.error(`Erro ao salvar o evento `, `Erro!`);
-
-                },
-                () => { this.spinner.hide(); }
-              )
-            }
-    } else {
-
-      if (this.form.valid) {
-        // Verifica se o formulario é valido e usando o spread (...) copia
-        // essa linha diz para adicionar um id que vem do evento.id
-        this.evento = {id: this.evento.id, ...this.form.value }
-
-        this.spinner.show();
-        this.eventoService.putEvento(this.evento.id, this.evento).subscribe(
-          () => { this.toastr.success(`Evento atualizado com sucesso`, `Sucesso!`) },
-          (error: any) => {
-            console.error(error);
-            this.spinner.hide();
-            this.toastr.error(`Erro ao atualizar o evento `, `Erro!`);
-
-          },
-          () => { this.spinner.hide(); }
-        )
-      }
-      }
-   
 
   }
 }

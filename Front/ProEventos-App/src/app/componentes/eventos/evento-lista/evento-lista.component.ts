@@ -80,24 +80,21 @@ export class EventoListaComponent implements OnInit {
   }
 
   public CarregarEventos(): void {
-    this.eventoService.getEventos().subscribe({
+    this.eventoService.getEventos().subscribe(
 
-      next: (eventos: Evento[]) => {
+       (eventos: Evento[]) => {
         (this.eventos = eventos);
         (this.eventosFiltrados = this.eventos);
       },
-      error: (error: any) => {
-        this.spinner.hide();
+       (error: any) => {
+        // this.spinner.hide();
         this.toastr.error('Erro ao Carregar os Eventos', 'Erro !');
 
       },
 
-      complete: () => this.spinner.hide()
-    })
+      // complete: () => this.spinner.hide()
+    ).add(() => this.spinner.hide());
   };
-
-
-
 
   public ExibirImagem(): void {
     this.exibirImg = !this.exibirImg;
@@ -119,20 +116,19 @@ export class EventoListaComponent implements OnInit {
     this.eventoService.deleteEvento(this.eventoId).subscribe(
       (result: any) => {
         if (result.message == 'Deletado')
-        
-          console.log(result);
-          this.toastr.success(`O Evento foi deletado com Sucesso.`, `Deletado!`);
-          this.spinner.hide();
-          this.CarregarEventos();
-        
-      },
+           console.log(result);
+        this.toastr.success(`O Evento foi deletado com Sucesso.`, `Deletado!`);
+       // this.spinner.hide();
+        this.CarregarEventos();
+        },
       (error: any) => {
         console.error(error);
         this.toastr.error(`Erro ao tentar deletar o Evento ${this.eventoId}`, 'Erro!');
-        this.spinner.hide();
-      },
-      () => { this.spinner.hide(); }
-    );
+       // this.spinner.hide();
+      }
+      // Add chama o Hide após cada execução do bloco fazendo o Complete(), se executado . 
+      //complete: () => { this.spinner.hide(); } substituido por  .add(() =>  this.spinner.hide())
+    ).add(() =>  this.spinner.hide());
   }
   
 

@@ -1,4 +1,4 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -38,9 +38,10 @@ import { PerfilComponent } from './componentes/user/perfil/perfil.component';
 import { LoginComponent } from './componentes/user/login/login.component';
 import { RegistrarComponent } from './componentes/user/registrar/registrar.component';
 
+
 // configura o idioma do DATEPICKER
 
-defineLocale('pt-br', ptBrLocale);
+defineLocale(`pt-br`, ptBrLocale);
 
 
 
@@ -61,6 +62,7 @@ defineLocale('pt-br', ptBrLocale);
       UserComponent,
       LoginComponent,
       RegistrarComponent,
+     
 
    ],
 
