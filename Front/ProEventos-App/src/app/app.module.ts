@@ -29,6 +29,7 @@ import { ContatosComponent } from './componentes/contatos/contatos.component';
 import { PalestrantesComponent } from './componentes/palestrantes/palestrantes.component';
 
 import { EventoServices } from './services/eventos.services';
+import { LoteServices } from './services/lote.service';
 import { EventosComponent } from './componentes/eventos/eventos.component';
 import { EventoDetalheComponent } from './componentes/eventos/evento-detalhe/evento-detalhe.component';
 import { EventoListaComponent } from './componentes/eventos/evento-lista/evento-lista.component';
@@ -62,7 +63,7 @@ defineLocale(`pt-br`, ptBrLocale);
       UserComponent,
       LoginComponent,
       RegistrarComponent,
-     
+
 
    ],
 
@@ -74,7 +75,7 @@ defineLocale(`pt-br`, ptBrLocale);
     CollapseModule.forRoot(),
     ReactiveFormsModule,
     FormsModule,
-    
+
 
                             // forRoot() foi usado para que se necessário passar parametro
     TooltipModule.forRoot(),
@@ -92,8 +93,10 @@ defineLocale(`pt-br`, ptBrLocale);
 
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  // Providers => Permite injetar um servico ou classe , nesse caso esta sendo injetado pelo App.module podemos enxergar em qualquer lugar do projeto.
-  providers: [EventoServices],
+  //Providers => Permite injetar um servico ou classe , nesse caso esta sendo injetado pelo App.module podemos
+  // enxergar em qualquer lugar do projeto.
+
+  providers: [EventoServices,LoteServices  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

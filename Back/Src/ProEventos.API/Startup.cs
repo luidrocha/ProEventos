@@ -39,11 +39,16 @@ namespace ProEventos.API
             services.AddControllers() // .AddNewtonsoftJson() quebrar o loop infinito de referencias
                     .AddNewtonsoftJson(x => x.SerializerSettings
                     .ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+           
             // Injeção de Dependencia... Toda vez que encontrar
             // a interface IEventoService, injete o service EventoService
             services.AddScoped<IEventoService, EventoService>();
+            services.AddScoped<ILoteService, LoteService>();
+
             services.AddScoped<IEventoPersistence, EventoPersistence>();
+            services.AddScoped<ILotePersistence, LotePersistence>();
             services.AddScoped<IGeralPersistence, GeralPersistence>();
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProEventos.API", Version = "v1" });
@@ -67,9 +72,10 @@ namespace ProEventos.API
             app.UseAuthorization();
 
             // permite que requisição Http possa ser executada, liberando o bloqueio
-            app.UseCors(acesso => acesso.AllowAnyHeader()
-                                        .AllowAnyMethod()
-                                        .AllowAnyOrigin());
+            app.UseCors(acesso => acesso.AllowAnyOrigin()
+                                        .AllowAnyHeader()
+                                        .AllowAnyMethod());
+                                        
 
             app.UseEndpoints(endpoints =>
             {
