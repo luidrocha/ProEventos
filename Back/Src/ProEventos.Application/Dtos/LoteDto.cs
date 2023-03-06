@@ -13,7 +13,7 @@ namespace ProEventos.Application.Dtos
         [Required]
         public string DataInicio { get; set; }
         [Required]
-        public DateTime? DataFim { get; set; }
+        public string DataFim { get; set; }
         [Required]
         public int Quantidade { get; set; }
         public EventoDto Evento { get; set; }

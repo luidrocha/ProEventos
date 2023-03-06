@@ -83,7 +83,7 @@ namespace ProEventos.API.Controllers
                 var lote = await _loteService.GetLoteByIdsAsync(eventoId, loteId);
                 if (lote == null) return NoContent();
 
-                return await _loteService.DeleteLote(lote.EventoId, lote.Id)
+                return await _loteService.DeleteLote(lote.EventoId, loteId)
                      ? Ok(new { message = "Lote Deletado" }) // retorna um obj com a chave Deletado
                      : BadRequest("Erro ao excluir  Lote. Não deletado.");
               

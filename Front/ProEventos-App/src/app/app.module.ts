@@ -12,6 +12,7 @@ import { ToastrModule } from 'ngx-toastr';
 //import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { NgxSpinnerModule } from 'ngx-spinner';
 
+
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { defineLocale } from 'ngx-bootstrap/chronos';
 import { ptBrLocale } from 'ngx-bootstrap/locale'
@@ -38,6 +39,7 @@ import { UserComponent } from './componentes/user/user.component';
 import { PerfilComponent } from './componentes/user/perfil/perfil.component';
 import { LoginComponent } from './componentes/user/login/login.component';
 import { RegistrarComponent } from './componentes/user/registrar/registrar.component';
+import { NgxCurrencyModule } from 'ngx-currency';
 
 
 // configura o idioma do DATEPICKER
@@ -89,7 +91,8 @@ defineLocale(`pt-br`, ptBrLocale);
                               progressBar: true,
 
                         }),
-      NgxSpinnerModule
+      NgxSpinnerModule,
+      NgxCurrencyModule
 
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -46,14 +46,14 @@ export class LoteServices {
     .put<Lote>(`${this.baseURL}/${eventoId}`, lotes)
       .pipe(take(1));
 
-    
+
   }
 
   // Delete recebe de retorno uma string informando se foi deletado ou não
 
   public deleteLote(eventoId: number, loteId: number ): Observable<any> {
     return this.http
-      .delete(`${this.baseURL}/${eventoId}/{loteId}`)
+      .delete(`${this.baseURL}/${eventoId}/${loteId}`)
       .pipe(take(1));
   }
 
