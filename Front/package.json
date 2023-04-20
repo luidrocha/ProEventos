@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "bootstrap": "^4.6.2"
+    "bootstrap": "^4.6.2",
+    "moment": "^2.29.4"
   }
 }

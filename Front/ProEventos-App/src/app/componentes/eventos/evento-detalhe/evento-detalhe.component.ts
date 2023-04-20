@@ -14,6 +14,7 @@ import { EventoServices } from '@app/services/eventos.services';
 import { LoteServices } from '@app/services/lote.service';
 import { ValueConverter } from '@angular/compiler/src/render3/view/template';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { environment } from '@enviroments/environment';
 
 @Component({
   selector: 'app-evento-detalhe',
@@ -29,6 +30,9 @@ export class EventoDetalheComponent implements OnInit {
   evento = {} as Evento;
   modalRef: BsModalRef;
   loteAtual ={id:0, nome:'', indice:0};
+  imagemURL = 'assets/img/upload.png'
+// variavel para fazer o upload de arquivo
+  file: File;
 
   constructor(
     private fb: FormBuilder,
@@ -113,7 +117,7 @@ export class EventoDetalheComponent implements OnInit {
       qtdPessoa: ['', [Validators.required, Validators.max(500)]],
       telefone: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      imagemUrl: ['', Validators.required],
+      imagemUrl: [''],
       // Recebe um array fazio
       lotes: this.fb.array([]),
     });
@@ -151,12 +155,21 @@ public retornaTituloLote(loteNome: string): string {
         next: (evento: Evento) => {
           this.evento = { ...evento };
           this.form.patchValue(this.evento);
+
+          if (this.evento.imagemUrl !='')
+          {
+            // invironment importada no topo, var apiURL declarada em environmnet.ts
+            // Atualiza a imagem do FRONT
+           this.imagemURL = environment.apiURL+'/Resources/imagens/'+this.evento.imagemUrl
+
+          }
+
           // Refatorado carregar Lotes
           this.evento.lotes.forEach((lote) => {
             this.lotes.push(this.criarLote(lote));
           });
 
-          //this.carregarLotes();
+          //this.carregarLotes(); poderia ser usado desta forma
         },
         error: (error: any) => {
           this.spinner.hide();
@@ -278,8 +291,39 @@ public retornaTituloLote(loteNome: string): string {
 
   }
 
-  declineDeleteLote(){
+  public declineDeleteLote(){
     this.modalRef.hide();
+  }
+
+  public onFileChange (ev: any) :void {
+
+    const reader = new FileReader();
+    // Sobreescreve a imagem de upload
+    reader.onload =(event: any) => this.imagemURL = event.target.result;
+// Passa todos os arquiso seleciondos para variavel file
+    this.file= ev.target.files;
+    // Atualiza a imagem padrao
+    reader.readAsDataURL(this.file[0]);
+// Depois de carregar a imagem, salva a imagem no repositorio
+    this.uploadImagem();
+
+  }
+
+  public uploadImagem() : void {
+
+      this.spinner.show();
+      this.eventoService.postUpload(this.eventoId, this.file).subscribe(
+        () => {
+          this.carregarEvento();
+          this.toastr.success('Imagem Salva ou atualizada com sucesso', 'Sucesso !');
+        },
+        (error) => {
+
+          this.toastr.error('Erro ao Salvar ou atualizar a imagem', 'Error "');
+          console.log(error);
+        }
+      ).add( () => this.spinner.hide)
+
   }
 }
 

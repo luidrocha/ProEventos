@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Evento } from '../model/Evento';
 import { take } from 'rxjs';
+import { environment } from '@enviroments/environment';
 
 //Permite injetar um servico ou classe , nesse caso esta sendo injetado no Root, assim, qualquer parte da aplicação
 // Enxerga e poderá ser usado em outros modulos.
@@ -18,7 +19,7 @@ import { take } from 'rxjs';
 export class EventoServices {
 
 // baseURL = 'https://localhost:44301/api/Eventos';
-  baseURL ='https://localhost:5001/api/Eventos';
+  baseURL = environment.apiURL + '/api/Eventos';
 
   constructor(private http: HttpClient) { }
 
@@ -30,7 +31,7 @@ export class EventoServices {
     return this.http
       .get<Evento[]>(this.baseURL)
       .pipe(take(1));
-  
+
   }
 
   // retorna uma Array
@@ -77,5 +78,17 @@ export class EventoServices {
       .pipe(take(1));
   }
 
+public postUpload(eventoId: number, file:File): Observable<Evento> {
 
+const fileToUpload = file[0] as File;
+const formData = new FormData();
+// formdata é necessário para mandar a requisição para o BackEnd
+formData.append('file',fileToUpload);
+
+  return     this.http
+             .post<Evento>(`${this.baseURL}/upload-imagem/${eventoId}`, formData)
+
+
+
+}
 }

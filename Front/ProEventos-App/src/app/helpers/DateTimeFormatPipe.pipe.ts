@@ -3,27 +3,25 @@ import { LOCALE_ID, Pipe, PipeTransform } from '@angular/core';
 import { ptBrLocale } from 'ngx-bootstrap/chronos';
 import { Constants } from '../util/Constants';
 
-@Pipe({ name: 'DateTimeFormatPipe' })
+
+@Pipe({ name: 'DateFormatPipe' })
 
 // extends DataPipe para fazer o override
 
-export class DateTimeFormat_Pipe  implements PipeTransform {
+export class DateTimeFormat_Pipe  extends DatePipe implements PipeTransform {
 
-    
-  transform(value: any): any {
 
-   // Constants.DATETIME_FMT
-    //let year = new Date(value).getFullYear().toString;
-    //let month = new Date(value).getMonth().toString;
-    //let day = new Date(value).getDay().toString;
+  override transform(value: any, args?: any): any {
 
-   // let dataFormatada = formatDate(value, 'dd/MM/yyyy hh:mm a','');
+    return super.transform(value, Constants.DATETIME_FMT);
+
+
     //Constants.DATETIME_FMT
 
     console.log(value);
 
     return value;
-      
+
 
     }
 }

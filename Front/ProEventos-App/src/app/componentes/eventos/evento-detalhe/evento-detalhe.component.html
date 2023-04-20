@@ -1,18 +1,18 @@
-<div class="card rouded shadow-sm">
+<div class="row px-3">
+  <!-- Ajusta a tela de acordo com o modo para 8 col em editar e 12 em novo -->
+  <div class="p-0" [ngClass]="{'col-md-8 pr-4':modoEditar, 'col-md-12 pr-4': !modoEditar}">
+
+    <div class="card rouded shadow-sm">
   <!-- formGroup faz a referencia com o metodo de validação dos campos -->
 
   <form [formGroup]="form">
-    <!-- <p> Form Debug</p>
-    <p> {{form.value | json}}</p>
-    <p>Status : {{form.status| json}}</p>-->
-
     <div class="p-3">
       <div class="form-row">
 
         <div class="form-group col-md-12 ">
           <label>Tema</label>
           <input type="text" class="form-control" [ngClass]="cssValidator(f.tema)"
-                 formControlName="tema" placeholder="Insira o Tema">
+                 formControlName="tema" [(ngModel)]="evento.tema" placeholder="Insira o Tema">
 
           <div *ngIf="f.tema.errors?.required" class="invalid-feedback">
             Tema é obrigatório
@@ -32,7 +32,7 @@
         <div class="form-group col-md-8">
           <label>Local</label>
           <input type="text" class="form-control" [ngClass]="cssValidator(f.local)"
-                 formControlName="local" placeholder="local do evento">
+                 formControlName="local" [(ngModel)]="evento.local" placeholder="local do evento">
 
           <div *ngIf="f.local.errors?.required" class="invalid-feedback">
             Local é obrigatório
@@ -47,10 +47,11 @@
         <div class="form-group col-md-4">
           <label>Data e Hora</label>
           <input type="datetime" class="form-control is-invalid"
-                 value="{{evento.dataEvento| DateTimeFormatPipe}}"
+                 value="{{evento.dataEvento| DateFormatPipe}}"
                  bsDatepicker
                  [bsConfig]="dpConfig"
                  formControlName="dataEvento"
+                 [(ngModel)]="evento.dataEvento                "
                  [ngClass]="cssValidator(f.dataEvento)" placeholder="data e hora">
           <div *ngIf="f.dataEvento.errors?.required" class="invalid-feedback">
             Data e hora é obrigatório
@@ -62,7 +63,7 @@
         <div class="form-group col-md-2">
           <label>Qtd Pessoas</label>
           <input type="number" class="form-control" [ngClass]="cssValidator(f.qtdPessoa)"
-                 formControlName="qtdPessoa" placeholder="">
+                 formControlName="qtdPessoa" [(ngModel)]="evento.qtdPessoa" placeholder="">
 
           <div *ngIf="f.qtdPessoa.errors?.required" class="invalid-feedback">
             Qtd pessoas é obrigatório
@@ -73,22 +74,24 @@
           </div>
 
         </div>
-        <div class="form-group col-md-2">
+        <div class="form-group col-md-4">
           <label>Telefone</label>
           <input type="text" class="form-control"
                  [ngClass]="cssValidator(f.telefone)"
-                 formControlName="telefone" placeholder="(00) 90000-0000">
+                 formControlName="telefone" [(ngModel)]="evento.telefone"
+                 placeholder="(00) 90000-0000">
 
           <div *ngIf="f.telefone.errors?.required" class="invalid-feedback">
             Telefone é obrigatório
           </div>
         </div>
 
-        <div class="form-group col-md-4">
+        <div class="form-group col-md-6">
           <label>Email</label>
           <input type="text" class="form-control"
                  [ngClass]="cssValidator(f.email)"
-                 formControlName="email" placeholder="e-mail">
+                 formControlName="email" [(ngModel)]="evento.email"
+                 placeholder="e-mail">
 
 
           <div *ngIf="f.email.errors?.required" class="invalid-feedback">
@@ -101,8 +104,8 @@
 
 
         </div>
-
-        <div class="form-group col-md-4">
+        <!-- Removido campo IMAGEM após implementar UPLOAD de arquivo -->
+        <!-- <div class="form-group col-md-4">
           <label>Imagem</label>
           <input type="text" class="form-control is-invalid"
                  [ngClass]="cssValidator(f.imagemUrl)"
@@ -110,7 +113,7 @@
           <div *ngIf="f.imagemUrl.errors?.required" class="invalid-feedback">
             Imagem é obrigatório
           </div>
-        </div>
+        </div> -->
 
       </div>
 
@@ -137,9 +140,6 @@
 <!--seção Lotes-->
  <!-- exibe a dive somente quando modoEditar='put' -->
 <div class="card rounded shadow-sm mt-4" *ngIf="modoEditar">
- <!-- <p> Form value: {{form.controls['lotes'].value |json}} </p>
-<p> Form valid: {{form.controls['lotes'].status | json}} </p>
-<p> Modo : {{modoEditar}} </p> -->
   <div class="p-3">
     <div class="d-flex border-bottom">
       <h2 class="mr-auto">
@@ -184,8 +184,6 @@
                 </div>
 
                 </div>
-
-
               <div class="form-group col-md-4">
                 <label>Quantidade</label>
                 <input [ngClass]="cssValidator(lotes.get(i+'.quantidade'))"
@@ -239,6 +237,59 @@
     </div>
   </div>
 </div>
+<!-- Fecha as 2 primeira divs -->
+</div>
+
+<!-- Sessão UPLOAD -->
+<div class="col-md-4 pr-0" *ngIf="modoEditar">
+  <div [formGroup]="form" class="card-evento-view shadow-sm">
+    <div class="form-row">
+      <div class="form-group m-0">
+        <!-- (change)="onFileChange($event) PASSA as informações do evento após MUDANCA DE ESTADO -->
+        <input type="file" #file (change)="onFileChange($event)"
+        class="form-control is-invalid " placeholder="" style="display:none">
+    </div>
+    <div class="card profile-card-2">
+      <div class="card-img-block">
+        <!-- (click)="file.click() EXECUTA o CLICK no INPUT com id FILE-->
+        <img class="image" [src]="imagemURL" class="img-fluid" (click)="file.click()" alt="Card image cap"
+        tooltip="Uplaod de Nova Imagem" [adaptivePosition]="false" placement="bottom" />
+      </div>
+      <div class="card-body pt-3">
+        <h4>{{evento.tema}}</h4>
+        <p class="card-text">
+          <b>Local:</b> {{evento.local}}
+          <br>
+          <b>Data:</b> {{evento.dataEvento | DateFormatPipe}}
+        </p>
+        <hr>
+        <p class="card-text">
+          <b>Contatos</b><br>
+          <small class="text-muted">Telefone: {{evento.telefone}}</small>
+          <br>
+          <small class="text-muted">e-mail: {{evento.email}}</small>
+        </p>
+        <p class="card-text">
+          Capacidade:
+          <small class="text-muted">{{evento.qtdPessoa}}</small>
+        </p>
+        <div class="row">
+          <div class="icon-block col-md-8 iconesSociais">
+            <a href="">
+              <i class=""></i>
+            </a>
+          </div>
+          <!--div class="col-md-4 d-flex justify-content-center">
+            <a href="#" class="btn btn-outline-primary">Participar</a>
+          </div-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+
 <br>
 <!-- Modal para exclusão   -->
 <ng-template #template>

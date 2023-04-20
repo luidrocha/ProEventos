@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System;
 using Microsoft.AspNetCore.Http;
 using ProEventos.Application.Dtos;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace ProEventos.API.Controllers
 {
@@ -15,13 +17,18 @@ namespace ProEventos.API.Controllers
     public class EventosController : ControllerBase
     {
         private readonly IEventoService _eventoService;
+        
+        // faz a injeção de dependencia pra pegar as informações do host
+        private readonly IWebHostEnvironment _hostEnvironment;
 
         // Cria 2 objetos no formato JSON
 
 
-        public EventosController(IEventoService eventoService)
+        public EventosController(IEventoService eventoService, IWebHostEnvironment hostEnvironment)
         {
             _eventoService = eventoService;
+            _hostEnvironment = hostEnvironment;
+
         }
 
 
@@ -92,7 +99,36 @@ namespace ProEventos.API.Controllers
             }
         }
 
+        [HttpPost("upload-imagem/{eventoId}")]
+        public async Task<IActionResult> UploadImagem (int eventoId)
+        {
+            try
+            {
+                var evento = await _eventoService.GetEventoByIdAsync(eventoId, true);
+                if (evento == null) return NoContent();
+                
+                // Pega o nome do arquivo recebido
+                var file = Request.Form.Files[0];
 
+                if (file.Length>0)
+                {
+                  evento.ImagemUrl = await AsyncSaveImage(file);
+
+                }
+                var EventoRetorno = await _eventoService.UpdateEvento(eventoId, evento);
+
+
+                return Ok(EventoRetorno);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                       $"Erro interno, não foi possivel adicionar o Evento. Erro: {ex.Message} ");
+            }
+
+
+        }
 
         [HttpPost]
         public async Task<IActionResult> Post(EventoDto model)
@@ -143,12 +179,21 @@ namespace ProEventos.API.Controllers
 
             try
             {
+                var evento =  await _eventoService.GetEventoByIdAsync(id, true);
+                if (evento==null) return NoContent();
                 // Usamos uma condição TERNARIA
 
-                return await _eventoService.DeleteEvento(id)
-                     ? Ok(new { message = "Deletado" }) // retorna um obj com a chave Deletado
-                     : BadRequest("Erro ao excluir. Não deletado.");
+                if (await _eventoService.DeleteEvento(id))
+                {
+                DeleteImage(evento.ImagemUrl);
+                return Ok(new { message = "Deletado" });
+                }
+                else {
+
+                 // retorna um obj com a chave Deletado
+                     throw new Exception("Erro ao tentar excluir o Evento. Não deletado.");
               
+                    }
             }
             catch (Exception ex)
             {
@@ -158,5 +203,48 @@ namespace ProEventos.API.Controllers
 
         }
 
+        // informa ao controle que não é um end-point, não pode ser acessado 
+        // Salva a imagem de upload
+        
+        [NonAction]
+        public async Task<string> AsyncSaveImage(IFormFile imageFile)
+        {
+            // Pega os 10 primeiro caracteres do nome do arquivo sem a extensão.
+            // Replace troca onde tem espaço por underline.
+            string imagemName = new string(Path.GetFileNameWithoutExtension(imageFile.FileName)
+                                          .Take(10)
+                                          .ToArray()
+                                          ).Replace(' ', '_');
+            // Cria um nome para o arquivo concatenando com data, ano minuto e segundo
+            // Path pega informaçoes do arquivo, nesse caso coloca a extensão no final
+            imagemName = $"{ imagemName}{DateTime.UtcNow.ToString("yymmssfff")}{Path.GetExtension(imageFile.FileName)}";
+
+            // Monta o caminho da pasta padrão para Salvar o arquivo
+            var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, @"Resources/imagens", imagemName);
+
+            using (var fileStream = new FileStream(imagePath, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(fileStream);
+            }
+            return imagemName;
+
+        }
+       
+        // informa ao controle que não é um end-point, não pode ser acessado 
+        [NonAction]
+        public void DeleteImage(string imagemName)
+        {
+           // Pega o caminho e o  nome do arquivo a excluir
+            var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, @"Resources\imagens",imagemName);
+            // Verifica se o arquivo existe
+            if (System.IO.File.Exists(imagePath))
+               System.IO.File.Delete(imagePath);
+           
+        }
+
     }
+
+  
+
+
 }

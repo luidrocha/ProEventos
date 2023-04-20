@@ -7,6 +7,7 @@ import { take } from 'rxjs';
 import { Lote } from '../model/Lote';
 import { EventoDetalheComponent } from '@app/componentes/eventos/evento-detalhe/evento-detalhe.component';
 import { TemplateBindingParseResult } from '@angular/compiler';
+import { environment } from '@enviroments/environment';
 
 //Permite injetar um servico ou classe , nesse caso esta sendo injetado no Root, assim, qualquer parte da aplicação
 // Enxerga e poderá ser usado em outros modulos.
@@ -22,7 +23,7 @@ export class LoteServices {
 
    //baseURL = 'https://localhost:44301/api/lotes';
 
-  private readonly baseURL='https://localhost:5001/api/lotes';
+  private readonly baseURL= environment.apiURL + '/api/lotes';
 
   constructor(private http: HttpClient ) { }
 

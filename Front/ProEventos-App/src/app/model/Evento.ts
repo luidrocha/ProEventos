@@ -6,7 +6,7 @@ export interface Evento {
 
   id: number;
   local: string;
-  dataEvento?: Date; // ? = pode ser nullo
+  dataEvento?: string; // ? = pode ser nullo
   tema: string;
   qtdPessoa: number;
   imagemUrl: string;
@@ -15,6 +15,6 @@ export interface Evento {
   // Usado para retornar a lista de Lotes e RedeSociais
   lotes: Lote[]; // um evento tem vaios lotes
   redesSociais: RedeSocial[]; // um eventos pode ter varias redes sociais
-  // Tabela auxiliar 
+  // Tabela auxiliar
   palestranteEventos: Palestrante[];
 }

@@ -13,6 +13,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { NgxSpinnerModule } from 'ngx-spinner';
 
 
+
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { defineLocale } from 'ngx-bootstrap/chronos';
 import { ptBrLocale } from 'ngx-bootstrap/locale'
@@ -67,6 +68,7 @@ defineLocale(`pt-br`, ptBrLocale);
       RegistrarComponent,
 
 
+
    ],
 
   imports: [
@@ -92,14 +94,15 @@ defineLocale(`pt-br`, ptBrLocale);
 
                         }),
       NgxSpinnerModule,
-      NgxCurrencyModule
+      NgxCurrencyModule,
+
 
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   //Providers => Permite injetar um servico ou classe , nesse caso esta sendo injetado pelo App.module podemos
   // enxergar em qualquer lugar do projeto.
 
-  providers: [EventoServices,LoteServices  ],
+  providers: [EventoServices,LoteServices,  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

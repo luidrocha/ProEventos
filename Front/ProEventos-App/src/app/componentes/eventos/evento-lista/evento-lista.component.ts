@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { Router } from '@angular/router';
+import { environment } from '@enviroments/environment';
+import { Moment } from 'moment';
 
 
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
@@ -99,6 +101,16 @@ export class EventoListaComponent implements OnInit {
   public ExibirImagem(): void {
     this.exibirImg = !this.exibirImg;
   }
+
+  public retornaImagem(imagemURL: string): string {
+
+    return (imagemURL !='' || imagemURL==null)
+    // se tiver imagem cadastrada, pega da API, SENÃO, coloca uma imagem PADRÃO.
+    ? `${environment.apiURL}`+`/resources/imagens/${imagemURL}`
+    : "/assets/img/semImagem.png"
+
+  }
+
   // Metodo para janela MODAL
   public openModal(event: any, template: TemplateRef<any>, eventoid: number) {
     //faz com que o click da linha de editar não propague para o Botão EXCLUIR
@@ -116,6 +128,7 @@ export class EventoListaComponent implements OnInit {
     this.eventoService.deleteEvento(this.eventoId).subscribe(
       (result: any) => {
         if (result.message == 'Deletado')
+
            console.log(result);
         this.toastr.success(`O Evento foi deletado com Sucesso.`, `Deletado!`);
        // this.spinner.hide();
@@ -126,11 +139,11 @@ export class EventoListaComponent implements OnInit {
         this.toastr.error(`Erro ao tentar deletar o Evento ${this.eventoId}`, 'Erro!');
        // this.spinner.hide();
       }
-      // Add chama o Hide após cada execução do bloco fazendo o Complete(), se executado . 
+      // Add chama o Hide após cada execução do bloco fazendo o Complete(), se executado .
       //complete: () => { this.spinner.hide(); } substituido por  .add(() =>  this.spinner.hide())
     ).add(() =>  this.spinner.hide());
   }
-  
+
 
   decline(): void {
     this.modalRef?.hide();

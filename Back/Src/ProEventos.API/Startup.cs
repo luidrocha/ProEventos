@@ -6,14 +6,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.FileProviders;
 using ProEventos.Application;
 using ProEventos.Application.IContratos;
 using ProEventos.Persistence.Contextos;
 using ProEventos.Persistence.IContratos;
 using ProEventos.Persistence;
 using AutoMapper;
-
-
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace ProEventos.API
 {
@@ -75,6 +76,15 @@ namespace ProEventos.API
             app.UseCors(acesso => acesso.AllowAnyOrigin()
                                         .AllowAnyHeader()
                                         .AllowAnyMethod());
+
+            // Configura o local para gravação das imagens / arquivos anexos
+
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),"Resources")),
+                RequestPath=new PathString("/Resources")
+
+            }) ;
                                         
 
             app.UseEndpoints(endpoints =>

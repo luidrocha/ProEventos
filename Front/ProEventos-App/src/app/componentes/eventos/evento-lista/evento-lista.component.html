@@ -63,13 +63,15 @@
       <tr *ngFor="let evento of eventosFiltrados" (click)="detalheEvento(evento.id)" style="cursor: pointer;">
         <!-- binde de propriedades declarados no TS do componente -->
         <td class="d-none d-md-table-cell">
-          <img [collapse]="!exibirImg" src="/assets/{{evento.imagemUrl}} " [style.width.px]="larguraImg"
-            [style.margin.px]="margemImg" [isAnimated]="true">
+          <img [collapse]="!exibirImg"
+          [src]="retornaImagem(evento.imagemUrl)"
+          [style.width.px]="larguraImg"
+          [style.margin.px]="margemImg" [isAnimated]="true">
         </td>
         <td>{{evento.id}}</td>
         <td> {{evento.tema}} </td>
         <td class="d-none d-md-table-cell">{{evento.local}}</td>
-        <td>{{evento.dataEvento| DateTimeFormatPipe}}</td>
+        <td>{{evento.dataEvento | DateFormatPipe}}</td>
         <td class="d-none d-md-table-cell">{{evento.qtdPessoa}}</td>
         <td class="d-none d-md-table-cell">{{evento.lotes[0]?.nome}}</td>
         <td>
