@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using ProEventos.Domain.Identity;
 
 // Domain  equivale ao Model da arquitetura MVC
 
@@ -16,7 +17,7 @@ namespace ProEventos.Domain
         public int Id { get; set; }
         public string Local { get; set; }
         public DateTime? DataEvento { get; set; } // ? = pode ser nullo
-        // Campo que não mapeado para o banco de dados. Sera usado para exibição. Não vai para tabela
+        // Campo que nï¿½o mapeado para o banco de dados. Sera usado para exibiï¿½ï¿½o. Nï¿½o vai para tabela
         [NotMapped]
         public int ContagemDias { get; set; }
         public string Tema { get; set; }
@@ -24,6 +25,9 @@ namespace ProEventos.Domain
         public string ImagemUrl { get; set; } 
         public string Telefone { get; set; }
         public string Email { get; set; }
+        // Vem de Identity
+        public User User     { get; set; }
+        public int UserId  { get; set; }
         // Usado para retornar a lista de Lotes e RedeSociais
         public IEnumerable<Lote> Lotes { get; set; } // um evento tem vaios lotes
         public IEnumerable<RedeSocial> RedesSociais {get;set;} // um eventos pode ter varias redes sociais
