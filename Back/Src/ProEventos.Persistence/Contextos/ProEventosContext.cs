@@ -1,11 +1,16 @@
 
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ProEventos.Domain;
-
+using ProEventos.Domain.Identity;
 
 namespace ProEventos.Persistence.Contextos
 {
-    public class ProEventosContext : DbContext
+    // Caso não seja definido esses parametros o Identity vai ignorar as tabelas criadas por nos, User, Role, UserRoles
+    public class ProEventosContext : IdentityDbContext<User, Role, int, IdentityUserClaim<int>, 
+                                                       IdentityUserRole<int>, IdentityUserLogin<int>, 
+                                                       IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
         public DbSet<Evento> Eventos { get; set; }
         public DbSet<Lote> Lotes { get; set; }
