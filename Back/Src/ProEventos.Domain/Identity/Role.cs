@@ -8,6 +8,6 @@ namespace ProEventos.Domain.Identity
 {
     public class Role: IdentityRole<int>
     {
-        public List<UserRoles> UserRoles { get; set; }
+        public List<UserRole> UserRoles { get; set; }
     }
 }

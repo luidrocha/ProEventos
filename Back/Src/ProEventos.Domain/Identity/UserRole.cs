@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace ProEventos.Domain.Identity
 {
-    public class UserRoles: IdentityUserRole<int>
+    public class UserRole: IdentityUserRole<int>
     {
         // Um usuario tem diversas ROLES
         //as ROLES podem pertencer a varios usuarios

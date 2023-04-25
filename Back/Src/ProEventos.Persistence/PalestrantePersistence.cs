@@ -54,9 +54,10 @@ namespace ProEventos.Persistence
                         .ThenInclude(ev => ev.Evento);
             }
 
-            query = query.OrderBy(pe => pe.User.PrimeiroNome)
+            query = query.AsNoTracking().OrderBy(pe => pe.User.PrimeiroNome)
                     .Where(pe => pe.User.PrimeiroNome.ToLower()
                     .Contains(nome.ToLower()));
+                   
 
             return await query.ToArrayAsync();
 

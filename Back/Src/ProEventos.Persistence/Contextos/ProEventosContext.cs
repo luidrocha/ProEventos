@@ -28,6 +28,30 @@ namespace ProEventos.Persistence.Contextos
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
+          // Essa linha foi colocad para utilização do identity, sem ela não funciona.
+          // Senão for utilizar Identity, não precisa
+
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<UserRole>(userRole =>
+                {
+                // Os campos UserId e RoleId são herdados de IdentityUser e IdentityRole
+                userRole.HasKey(ur => new {ur.UserId, ur.RoleId});
+
+                userRole.HasOne(ur => ur.Role)
+                .WithMany(r => r.UserRoles)
+                .IsRequired();
+// Toda vez que colocar um Usuario dentro de UserRole, tem que colocar o UserId
+                userRole.HasOne(ur => ur.User)
+                .WithMany(r => r.UseRoles)
+                .HasForeignKey(ur => ur.UserId)
+                .IsRequired();
+
+
+                }
+            );
+
+
             modelBuilder.Entity<PalestranteEvento>()
                         .HasKey(PE => new { PE.EventoId, PE.PalestranteId });
 
