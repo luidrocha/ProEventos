@@ -9,7 +9,7 @@ namespace ProEventos.Persistence.Contextos
 {
     // Caso não seja definido esses parametros o Identity vai ignorar as tabelas criadas por nos, User, Role, UserRoles
     public class ProEventosContext : IdentityDbContext<User, Role, int, IdentityUserClaim<int>, 
-                                                       IdentityUserRole<int>, IdentityUserLogin<int>, 
+                                                       UserRole, IdentityUserLogin<int>, 
                                                        IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
         public DbSet<Evento> Eventos { get; set; }
