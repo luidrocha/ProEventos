@@ -8,7 +8,7 @@ using ProEventos.Domain.Enum;
 
 namespace ProEventos.Domain.Identity
 {
-    public class User: IdentityUser<int>
+    public class User : IdentityUser<int>
     {
         public string PrimeiroNome { get; set; }
         public string UltimoNome { get; set; }
@@ -17,12 +17,16 @@ namespace ProEventos.Domain.Identity
         public Funcao Funcao { get; set; }
         public string ImagemPerfil { get; set; }
         [NotMapped]
-        public string NomeCompleto {get {
-            return this.PrimeiroNome+UltimoNome;
-        }}
+        public string NomeCompleto
+        {
+            get
+            {
+                return this.PrimeiroNome + UltimoNome;
+            }
+        }
         // Usado para recuperar as permissões do usuário
         public IEnumerable<UserRole> UseRoles { get; set; }
 
-        
+
     }
 }
