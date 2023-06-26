@@ -94,13 +94,13 @@ namespace ProEventos.Application
         {
             try
             {
-                var user = await _userPersist.GetUserByUserName(userUpdateDto.Username);
-
-                if (user == null) return null;
+               var user =  await _userPersist.GetUserByUserName(userUpdateDto.Username);
+               
+               if (user == null) return null ;
 
                 // após encontrar, mapeia o user com os falores vindo do DTO
-
-                _mapper.Map<UserUpdateDto>(user);
+              
+              _mapper.Map(userUpdateDto, user);
 
                 // GeneratePasswordResetTokenAsync foi usado para não deslogar o usuario na troca de senha
 

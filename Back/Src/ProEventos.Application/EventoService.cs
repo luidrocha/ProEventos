@@ -27,7 +27,7 @@ namespace ProEventos.Application
 
         // Adiciona o evento e retorno o evento para utilização, caso queira..
 
-        public async Task<EventoDto> AddEventos(EventoDto model)
+        public async Task<EventoDto> AddEventos(int userId, EventoDto model)
         {
             
             try
@@ -35,12 +35,14 @@ namespace ProEventos.Application
                 // Adiciona um objeto do tipo Evento que chega em model
                 
                 var evento = _mapper.Map<Evento>(model);  // Mapeia de model para Entidade
+                
+                evento.UserId=userId;
 
                 _geralPersistence.Add<Evento>(evento);
 
                 if (await _geralPersistence.SaveChangesAsync()) // Retorna True se foi salvo
                 {
-                   var eventoRetorno = await _eventoPersistence.GetEventoByIdAsync(evento.Id); // pega o evento que acabou de gravar
+                   var eventoRetorno = await _eventoPersistence.GetEventoByIdAsync(userId, evento.Id); // pega o evento que acabou de gravar
 
                     return _mapper.Map<EventoDto>(eventoRetorno); // Mapeia de Entidade para Model
                 }
@@ -54,18 +56,19 @@ namespace ProEventos.Application
             };
         }
 
-        public async Task<EventoDto> UpdateEvento(int eventoId, EventoDto model)
+        public async Task<EventoDto> UpdateEvento(int userId, int eventoId, EventoDto model)
         {
             try
             {
                 // Temos um get que segura o objeto Evento. Dentro do metodo temos que usar o AsNotracking
 
            
-                var evento  = await _eventoPersistence.GetEventoByIdAsync(eventoId, false);
+                var evento  = await _eventoPersistence.GetEventoByIdAsync(userId, eventoId, false);
 
                 if (evento == null) return null;
 
                 model.Id = eventoId;
+                model.UserId = userId;
                 
                 _mapper.Map(model, evento); // Mapeamento de objetos e não classes... ou entidades.
 
@@ -75,7 +78,7 @@ namespace ProEventos.Application
                 // Retorna true se for gravado
                 if (await _geralPersistence.SaveChangesAsync())
                 {
-                    var eventoRetorno = await _eventoPersistence.GetEventoByIdAsync(evento.Id, false);
+                    var eventoRetorno = await _eventoPersistence.GetEventoByIdAsync(userId, evento.Id, false);
 
                     return _mapper.Map<EventoDto>(eventoRetorno);
                 }
@@ -89,12 +92,12 @@ namespace ProEventos.Application
             }
         }
 
-        public async Task<bool> DeleteEvento(int eventoId)
+        public async Task<bool> DeleteEvento(int userId, int eventoId)
         {
 
             try
             {
-                var evento = await _eventoPersistence.GetEventoByIdAsync(eventoId, false);
+                var evento = await _eventoPersistence.GetEventoByIdAsync(userId, eventoId, false);
 
                 if (evento == null) // nesse ponto deveria retornar um boll
                 {
@@ -114,12 +117,12 @@ namespace ProEventos.Application
             }
         }
 
-        public async Task<EventoDto[]> GetAllEventosAsync(bool includePalestrantes = false)
+        public async Task<EventoDto[]> GetAllEventosAsync(int userId, bool includePalestrantes = false)
         {
 
             try
             {
-                var eventos = await _eventoPersistence.GetAllEventoAsync(includePalestrantes);
+                var eventos = await _eventoPersistence.GetAllEventoAsync(userId, includePalestrantes);
 
                 if (eventos == null) return null;
 
@@ -137,11 +140,11 @@ namespace ProEventos.Application
         }
 
 
-        public async Task<EventoDto[]> GetAllEventosByTemaAsync(string tema, bool includePalestrantes = false)
+        public async Task<EventoDto[]> GetAllEventosByTemaAsync(int userId, string tema, bool includePalestrantes = false)
         {
             try
             {
-                var eventos = await _eventoPersistence.GetAllEventosByTemaAsync(tema, includePalestrantes);
+                var eventos = await _eventoPersistence.GetAllEventosByTemaAsync(userId, tema, includePalestrantes);
 
                 if (eventos == null) return null;
 
@@ -159,11 +162,11 @@ namespace ProEventos.Application
         }
 
 
-        public async Task<EventoDto> GetEventoByIdAsync(int eventoId, bool includePalestrantes = false)
+        public async Task<EventoDto> GetEventoByIdAsync(int userId, int eventoId, bool includePalestrantes = false)
         {
             try
             {
-                var evento = await _eventoPersistence.GetEventoByIdAsync(eventoId, includePalestrantes);
+                var evento = await _eventoPersistence.GetEventoByIdAsync(userId, eventoId, includePalestrantes);
     
             if (evento == null) return null;
 

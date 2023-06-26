@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using ProEventos.Domain;
 using ProEventos.Application.IContratos;
 using System.Collections.Generic;
@@ -9,44 +10,52 @@ using Microsoft.AspNetCore.Http;
 using ProEventos.Application.Dtos;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using ProEventos.API.Extensions;
 
 namespace ProEventos.API.Controllers
 {
+   
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class EventosController : ControllerBase
     {
         private readonly IEventoService _eventoService;
-        
+        private readonly IAccountService _accountService;
+
         // faz a injeção de dependencia pra pegar as informações do host
         private readonly IWebHostEnvironment _hostEnvironment;
 
         // Cria 2 objetos no formato JSON
 
 
-        public EventosController(IEventoService eventoService, IWebHostEnvironment hostEnvironment)
+        public EventosController(IEventoService eventoService,
+        IWebHostEnvironment hostEnvironment, IAccountService accountService)
         {
             _eventoService = eventoService;
             _hostEnvironment = hostEnvironment;
+            _accountService = accountService;
 
         }
 
 
-        [HttpGet]
 
         // Foi usado o IActionResult para RETORNAR , poder usar o retorno dos erros de web como 200, 2001...500
         // poderia ser usado um IEQueryable<Eventos> ou  ActionResult<evento> e ainda poderia trabalhar com os retornos http
-        
+
+        [HttpGet]
         public async Task<IActionResult> Get() // Retorna um array
         {
             try
-            {
-                var eventos = await _eventoService.GetAllEventosAsync(true); // true para que venha os Palestrantes
+            {   // User.GetuserId() vem da classe de extensão que herda de ControlleBase e tem dados do usuario
+                // Vai retornar de acordo com o Token do usuario logado
+
+                var eventos = await _eventoService.GetAllEventosAsync(User.GetuserId(), true); // true para que venha os Palestrantes
 
                 // poderia ter usado NotFound("Nenhum evento encontrado."); // StatusCode erro 404
                 if (eventos == null) return NoContent(); //representa o mesmo codigo acima, porém, mensagem padrão do HTTP.
 
-               
+
                 return Ok(eventos); //StatusCode 200
             }
             catch (Exception ex)
@@ -63,7 +72,7 @@ namespace ProEventos.API.Controllers
         {
             try
             {
-                var evento = await _eventoService.GetEventoByIdAsync(eventoId, true);
+                var evento = await _eventoService.GetEventoByIdAsync(User.GetuserId(), eventoId, true);
 
                 if (evento == null) return NoContent();  //NotFound("Nenhum evento com o Id encontrado.");
 
@@ -86,7 +95,7 @@ namespace ProEventos.API.Controllers
         {
             try
             {
-                var eventos = await _eventoService.GetAllEventosByTemaAsync(tema, true);
+                var eventos = await _eventoService.GetAllEventosByTemaAsync( User.GetuserId(), tema, true);
 
                 if (eventos == null) return NoContent(); //NotFound("Nennhum evento com o tema eoncontrado.");
 
@@ -100,22 +109,22 @@ namespace ProEventos.API.Controllers
         }
 
         [HttpPost("upload-imagem/{eventoId}")]
-        public async Task<IActionResult> UploadImagem (int eventoId)
+        public async Task<IActionResult> UploadImagem(int eventoId)
         {
             try
             {
-                var evento = await _eventoService.GetEventoByIdAsync(eventoId, true);
+                var evento = await _eventoService.GetEventoByIdAsync(User.GetuserId(), eventoId, true);
                 if (evento == null) return NoContent();
-                
+
                 // Pega o nome do arquivo recebido
                 var file = Request.Form.Files[0];
 
-                if (file.Length>0)
+                if (file.Length > 0)
                 {
-                  evento.ImagemUrl = await AsyncSaveImage(file);
+                    evento.ImagemUrl = await AsyncSaveImage(file);
 
                 }
-                var EventoRetorno = await _eventoService.UpdateEvento(eventoId, evento);
+                var EventoRetorno = await _eventoService.UpdateEvento(User.GetuserId(), eventoId, evento);
 
 
                 return Ok(EventoRetorno);
@@ -135,7 +144,7 @@ namespace ProEventos.API.Controllers
         {
             try
             {
-                var evento = await _eventoService.AddEventos(model);
+                var evento = await _eventoService.AddEventos(User.GetuserId(), model);
 
                 if (evento == null) return BadRequest("Erro ao tentar adicionar o Evento");
 
@@ -157,7 +166,7 @@ namespace ProEventos.API.Controllers
 
             try
             {
-                var evento = await _eventoService.UpdateEvento(id, model);
+                var evento = await _eventoService.UpdateEvento(User.GetuserId(), id, model);
 
                 if (evento == null) return BadRequest("Erro ao tentar atualizar o Evento");
 
@@ -179,21 +188,22 @@ namespace ProEventos.API.Controllers
 
             try
             {
-                var evento =  await _eventoService.GetEventoByIdAsync(id, true);
-                if (evento==null) return NoContent();
+                var evento = await _eventoService.GetEventoByIdAsync(User.GetuserId(), id, true);
+                if (evento == null) return NoContent();
                 // Usamos uma condição TERNARIA
 
-                if (await _eventoService.DeleteEvento(id))
+                if (await _eventoService.DeleteEvento(User.GetuserId(), id))
                 {
-                DeleteImage(evento.ImagemUrl);
-                return Ok(new { message = "Deletado" });
+                    DeleteImage(evento.ImagemUrl);
+                    return Ok(new { message = "Deletado" });
                 }
-                else {
+                else
+                {
 
-                 // retorna um obj com a chave Deletado
-                     throw new Exception("Erro ao tentar excluir o Evento. Não deletado.");
-              
-                    }
+                    // retorna um obj com a chave Deletado
+                    throw new Exception("Erro ao tentar excluir o Evento. Não deletado.");
+
+                }
             }
             catch (Exception ex)
             {
@@ -205,7 +215,7 @@ namespace ProEventos.API.Controllers
 
         // informa ao controle que não é um end-point, não pode ser acessado 
         // Salva a imagem de upload
-        
+
         [NonAction]
         public async Task<string> AsyncSaveImage(IFormFile imageFile)
         {
@@ -217,7 +227,7 @@ namespace ProEventos.API.Controllers
                                           ).Replace(' ', '_');
             // Cria um nome para o arquivo concatenando com data, ano minuto e segundo
             // Path pega informaçoes do arquivo, nesse caso coloca a extensão no final
-            imagemName = $"{ imagemName}{DateTime.UtcNow.ToString("yymmssfff")}{Path.GetExtension(imageFile.FileName)}";
+            imagemName = $"{imagemName}{DateTime.UtcNow.ToString("yymmssfff")}{Path.GetExtension(imageFile.FileName)}";
 
             // Monta o caminho da pasta padrão para Salvar o arquivo
             var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, @"Resources/imagens", imagemName);
@@ -229,22 +239,22 @@ namespace ProEventos.API.Controllers
             return imagemName;
 
         }
-       
+
         // informa ao controle que não é um end-point, não pode ser acessado 
         [NonAction]
         public void DeleteImage(string imagemName)
         {
-           // Pega o caminho e o  nome do arquivo a excluir
-            var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, @"Resources\imagens",imagemName);
+            // Pega o caminho e o  nome do arquivo a excluir
+            var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, @"Resources\imagens", imagemName);
             // Verifica se o arquivo existe
             if (System.IO.File.Exists(imagePath))
-               System.IO.File.Delete(imagePath);
-           
+                System.IO.File.Delete(imagePath);
+
         }
 
     }
 
-  
+
 
 
 }

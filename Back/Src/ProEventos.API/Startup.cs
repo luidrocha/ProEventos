@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Collections.Generic;
 
 namespace ProEventos.API
 {
@@ -39,7 +40,7 @@ namespace ProEventos.API
             services.AddCors();
             // Pega a classe Profile para fazer o automapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            
+
             services.AddDbContext<ProEventosContext>(context => context.UseSqlite(
             // Passa a string de Conexão
             Configuration.GetConnectionString("Default")));
@@ -73,25 +74,25 @@ namespace ProEventos.API
                     {// Usado para descriptografar a chave 
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["TokenKey"])),
-                        ValidateIssuer=false,
-                        ValidateAudience=false
+                        ValidateIssuer = false,
+                        ValidateAudience = false
 
                     }
 
-                    ) ;
+                    );
 
 
 
 
-            services.AddControllers() 
-                                      // Metodo NATIVO Formata o json retornado de modo que possa gravar as informaçoes do ENUM, não o id e sim a string
+            services.AddControllers()
+                    // Metodo NATIVO Formata o json retornado de modo que possa gravar as informaçoes do ENUM, não o id e sim a string
                     .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
-                                     // .AddNewtonsoftJson() quebrar o loop infinito de referencias
+                    // .AddNewtonsoftJson() quebrar o loop infinito de referencias
                     .AddNewtonsoftJson(options => options.SerializerSettings
                     .ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
-                   // services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-           
+            // services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             // Injeção de Dependencia... Toda vez que encontrar
             // a interface IEventoService, injete o service EventoService
             services.AddScoped<IEventoService, EventoService>();
@@ -99,16 +100,54 @@ namespace ProEventos.API
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ITokenService, TokenService>();
 
-           // Classes de persistencia
+            // Classes de persistencia
             services.AddScoped<IEventoPersistence, EventoPersistence>();
             services.AddScoped<ILotePersistence, LotePersistence>();
             // Classe Generica para crud
             services.AddScoped<IGeralPersistence, GeralPersistence>();
             services.AddScoped<IUserPersist, UserPersist>();
-            
-            services.AddSwaggerGen(c =>
+
+            services.AddSwaggerGen(options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProEventos.API", Version = "v1" });
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "ProEventos.API", Version = "v1" });
+                // Configura o Swagger para usar Token 
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+
+                    Description = @"JWT Autorization heder usando Bearer.
+                                    Entre com 'Bearer ' [espaço] então coloque seu token.
+                                    Exemplo: ' Bearer 12345abcdefg' ",
+                    Name = "Autorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+
+                });
+
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                    {
+                        new OpenApiSecurityScheme
+
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Scheme = "oauth2",
+                            Name = "Bearer",
+                            In = ParameterLocation.Header,
+                            BearerFormat = "JWT",
+                        },
+                        new List<string>()
+
+                    }
+
+                }
+                // Fim da configuração do Swagger para trabalhar com Tokken 
+
+                );
             });
         }
 
@@ -117,6 +156,7 @@ namespace ProEventos.API
         {
             if (env.IsDevelopment())
             {
+                app.UseStatusCodePages();
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProEventos.API v1"));
@@ -139,16 +179,17 @@ namespace ProEventos.API
 
             app.UseStaticFiles(new StaticFileOptions()
             {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),"Resources")),
-                RequestPath=new PathString("/Resources")
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Resources")),
+                RequestPath = new PathString("/Resources")
 
-            }) ;
-                                        
+            });
+
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+            
         }
     }
 }

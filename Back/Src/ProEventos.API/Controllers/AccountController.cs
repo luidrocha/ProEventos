@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ProEventos.API.Extensions;
 using ProEventos.Application.Dtos;
 using ProEventos.Application.IContratos;
 using System.Reflection.Metadata.Ecma335;
+using System.Security.Claims;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ProEventos.API.Controllers
@@ -23,13 +26,19 @@ namespace ProEventos.API.Controllers
             _accountService = accountService;
             _tokenService = tokenService;
         }
-        [HttpGet("GetUser/{userName}")]
+        [HttpGet("GetUser")]
         // Permite chamar o metodo sem autenticação. Login e registrar deve ter este metodo
-        [AllowAnonymous] // alguém que não esta com token
-        public async Task<IActionResult> GetUser(string userName)
+        //[AllowAnonymous] // alguém que não esta com token
+        public async Task<IActionResult> GetUser()
         {
             try
             {
+                // User vem de ClaimsPrincipal / ControllerBase que é gerada por padrão do .net identity.
+                // Pega o user se for diferente de null
+
+                var userName = User.GetUserName();
+                //.FindFirst(ClaimTypes.Name)?.Value;
+
                 var user = await _accountService.GetUserByUserNameAsync(userName);
                 return Ok(user);
 
@@ -64,7 +73,7 @@ namespace ProEventos.API.Controllers
             catch (System.Exception ex)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError,
-                $"Erro ao tentar recuperar usuario. Error: {ex.Message}");
+                $"Erro ao tentar registrar usuário. Error: {ex.Message}");
 
             }
 
@@ -87,7 +96,7 @@ namespace ProEventos.API.Controllers
 
                 if (!result.Succeeded) return Unauthorized(" Usuario ou senha iválida !");
 
-            // Se encontrar o usuario monta um objeto com as informação de lonig e token
+                // Se encontrar o usuario monta um objeto com as informação de lonig e token
                 return Ok(
                     new
                     {
@@ -103,12 +112,39 @@ namespace ProEventos.API.Controllers
             catch (System.Exception ex)
             {
 
-               return this.StatusCode(StatusCodes.Status500InternalServerError,
-               $"Erro ao tentar fazer o login, tente mais tarde. Erro: {ex.Message}");
+                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                $"Erro ao tentar fazer o login, tente mais tarde. Erro: {ex.Message}");
             }
 
 
 
         }
+
+        [HttpPut("UpdateUser")]
+        public async Task<IActionResult> UpdateUser(UserUpdateDto userUpdateDto)
+        {
+
+            try
+            { // User.GetUserName() Vem do metodo de extensão, pois só podemos atualizar um user com base no Token
+                var user = await _accountService.GetUserByUserNameAsync(User.GetUserName());
+
+                if (user == null) return Unauthorized("Usuário inválido");
+
+                var userReturn  = await _accountService.UpdateAccount(userUpdateDto);
+
+                if (userReturn == null) return NoContent();
+
+                return Ok(userReturn);
+
+
+            }
+            catch (System.Exception ex)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                       $"Erro ao tentar atualizar os dados, tente mais tarde. Erro: {ex.Message}");
+            }
+
+        }
+
     }
 }

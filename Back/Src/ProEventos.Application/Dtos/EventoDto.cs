@@ -11,7 +11,7 @@ namespace ProEventos.Application.Dtos
          StringLength(30, MinimumLength = 5,
                           ErrorMessage = "o preenchimento do campo {0} deve estar entre 5 e 50 caracteres")]
         public string Local { get; set; }
-        
+
         [Required(ErrorMessage = "o campo {0} � Obrigatorio dd/MM/aaaa")]
         public DateTime? DataEvento { get; set; } // ? = pode ser nullo
 
@@ -29,17 +29,20 @@ namespace ProEventos.Application.Dtos
         [Display(Name = "Caminho imagem"),
         // Required(ErrorMessage = "campo {0} obrigat�rio"),
         RegularExpression(@".*\.(gif|GIF|jpe?g|JPE?G|bmp|BMP|png|PNG)$",
-         ErrorMessage ="formato de arquiquivo n�o suportado(gif, jpg, jpeg, bmp ou png")]     
+         ErrorMessage = "formato de arquiquivo n�o suportado(gif, jpg, jpeg, bmp ou png")]
         public string ImagemUrl { get; set; }
 
         [Required(ErrorMessage = "campom {0} � obrigat�rio"),
         Phone(ErrorMessage = "o campo {0} cont�m caracter inv�lido")]
         public string Telefone { get; set; }
-       
+
         [Required(ErrorMessage = "campo {0} � obrigat�rio"),
          Display(Name = "e-mail"),
         EmailAddress(ErrorMessage = "campo {0} preenchido com formato inv�lido")]
         public string Email { get; set; }
+        // Campo que será usado como chave estrangeira de ligação
+        public UserDto UserDto { get; set; }
+        public int UserId { get; set; }
 
         // Usado para retornar a lista de Lotes e RedeSociais
 

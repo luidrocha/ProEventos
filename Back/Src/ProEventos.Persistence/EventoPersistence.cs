@@ -25,7 +25,7 @@ namespace ProEventos.Persistence
         }
 
 
-        public async Task<Evento[]> GetAllEventoAsync(bool includePalestrantes = false)
+        public async Task<Evento[]> GetAllEventoAsync(int userId, bool includePalestrantes = false)
         {
             // Faz  a consulta e retorna um Array
 
@@ -33,7 +33,9 @@ namespace ProEventos.Persistence
                 .Include(ev => ev.Lotes)
                 .Include(ev => ev.RedesSociais);
             // AsNoTracking() para não prender o processo da consulta/objeto
-            query = query.AsNoTracking().OrderBy(ev => ev.Id);  // ordena pelo Id
+            query = query.AsNoTracking()
+                         .Where(ev => ev.UserId ==userId)
+                         .OrderBy(ev => ev.Id);  // ordena pelo Id
 
             if (includePalestrantes)
             {
@@ -44,7 +46,7 @@ namespace ProEventos.Persistence
 
             return await query.ToArrayAsync();
         }
-        public async Task<Evento[]> GetAllEventosByTemaAsync(string tema, bool includePalestrantes = false)
+        public async Task<Evento[]> GetAllEventosByTemaAsync(int userId, string tema, bool includePalestrantes = false)
         {
             IQueryable<Evento> query = _context.Eventos
                 .Include(ev => ev.Lotes)
@@ -60,11 +62,12 @@ namespace ProEventos.Persistence
             }
 
             query = query.OrderBy(ev => ev.Id) // Filta o evento por Tema
-                    .Where(ev => ev.Tema.ToLower().Contains(tema.ToLower()));
+                    .Where(ev => ev.Tema.ToLower().Contains(tema.ToLower())
+                              && ev.UserId ==userId);
 
             return await query.ToArrayAsync();
         }
-        public async Task<Evento> GetEventoByIdAsync(int eventoId, bool includePalestrantes = false)
+        public async Task<Evento> GetEventoByIdAsync(int userId, int eventoId, bool includePalestrantes = false)
         {
             IQueryable<Evento> query = _context.Eventos;
 
@@ -81,7 +84,7 @@ namespace ProEventos.Persistence
 
             query = query.AsNoTracking()
                 .OrderBy(ev => ev.Id)
-                .Where(ev => ev.Id == eventoId);
+                .Where(ev => ev.Id == eventoId && ev.UserId == userId);
 
             return await query.FirstOrDefaultAsync();
 
