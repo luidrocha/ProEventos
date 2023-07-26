@@ -1,5 +1,5 @@
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Evento } from '../model/Evento';
@@ -20,6 +20,10 @@ export class EventoServices {
 
 // baseURL = 'https://localhost:44301/api/Eventos';
   baseURL = environment.apiURL + '/api/Eventos';
+  // Se usa-semos somente o localStorage.getItem('user')).token}); retornaria STRING, JSON converteu pra JSON.
+  // Monta o header com tokem do usuario, tem que ser passadis em todas as requisições
+// Linha a baixo foi substituida pelo INTERCEPTOR
+ // tokenHeader = new HttpHeaders({ 'Authorization': `bearer ${JSON.parse(localStorage.getItem('user')).token}`});
 
   constructor(private http: HttpClient) { }
 

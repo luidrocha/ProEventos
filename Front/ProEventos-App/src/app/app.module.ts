@@ -1,6 +1,6 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule, FormControl, } from '@angular/forms';
 
@@ -32,6 +32,8 @@ import { PalestrantesComponent } from './componentes/palestrantes/palestrantes.c
 
 import { EventoServices } from './services/eventos.services';
 import { LoteServices } from './services/lote.service';
+import { AccountService } from './services/account.service';
+
 import { EventosComponent } from './componentes/eventos/eventos.component';
 import { EventoDetalheComponent } from './componentes/eventos/evento-detalhe/evento-detalhe.component';
 import { EventoListaComponent } from './componentes/eventos/evento-lista/evento-lista.component';
@@ -41,6 +43,8 @@ import { PerfilComponent } from './componentes/user/perfil/perfil.component';
 import { LoginComponent } from './componentes/user/login/login.component';
 import { RegistrarComponent } from './componentes/user/registrar/registrar.component';
 import { NgxCurrencyModule } from 'ngx-currency';
+import { JwtInterceptor } from './interceptors/jwt.interceptor';
+import { HomeComponent } from './home/home.component';
 
 
 // configura o idioma do DATEPICKER
@@ -66,6 +70,7 @@ defineLocale(`pt-br`, ptBrLocale);
       UserComponent,
       LoginComponent,
       RegistrarComponent,
+      HomeComponent,
 
 
 
@@ -102,7 +107,12 @@ defineLocale(`pt-br`, ptBrLocale);
   //Providers => Permite injetar um servico ou classe , nesse caso esta sendo injetado pelo App.module podemos
   // enxergar em qualquer lugar do projeto.
 
-  providers: [EventoServices,LoteServices,  ],
+  providers: [
+    EventoServices,
+    LoteServices,
+    AccountService,
+    {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi:true}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

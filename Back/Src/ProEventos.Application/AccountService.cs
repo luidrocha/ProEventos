@@ -48,7 +48,7 @@ namespace ProEventos.Application
             }
         }
 
-        public async Task<UserDto> CreateAccountAsync(UserDto userDto)
+        public async Task<UserUpdateDto> CreateAccountAsync(UserDto userDto)
         {
             try
             {
@@ -59,8 +59,8 @@ namespace ProEventos.Application
 
                 if (result.Succeeded)
                 {
-                    // UserDto é a classe . Faz o mapeamento inverso
-                    var userReturn = _mapper.Map<UserDto>(user);
+                    // UserDto é a classe . Faz o mapeamento inverso.  UserUpdateDto obj que contem token
+                    var userReturn = _mapper.Map<UserUpdateDto>(user);
                     return userReturn;
                 }
                 return null;

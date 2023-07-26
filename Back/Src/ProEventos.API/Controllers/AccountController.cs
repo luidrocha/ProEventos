@@ -59,12 +59,18 @@ namespace ProEventos.API.Controllers
 
             try
             {
-                if (await _accountService.UserExists(userDto.Username))
+                if (await _accountService.UserExists(userDto.UserName))
                     return BadRequest("Usuário já existe");
-
+                // Retorna um UserUpdateDto que contem o token, assim, apos registrar pode-se fazer o login direto
                 var user = await _accountService.CreateAccountAsync(userDto);
                 if (user != null)
-                    return Ok(user);
+                    return Ok(new
+                                {
+                                    userName = user.Username,
+                                    PrimeiroNome = user.PrimeiroNome,
+                                    token = _tokenService.CreateToken(user).Result
+
+                                });
 
                 return BadRequest("Não foi possivel cadastrar o usuario. Tente mais tarde");
 
