@@ -11,9 +11,12 @@ namespace ProEventos.Application.Dtos
     {
         // Usado para atualizar um usuario 
         
+      /* cOM O id no dto ao tentar salvar o registro estava tentanto regravar o ID, gerand erro de 
+      integridade referencial*/
+
         public int Id { get; set; }
         public string Titulo { get; set; }
-        public string Username { get; set; }
+        public string UserName { get; set; }
         public string PrimeiroNome { get; set; }
         public string UltimoNome { get; set; }
         public string Email { get; set; }

@@ -35,7 +35,7 @@ namespace ProEventos.Application
             try
             {
                 var user = await _userManager.Users.SingleOrDefaultAsync(
-                    user => user.UserName.ToLower() == userUpdateDto.Username.ToLower());
+                    user => user.UserName.ToLower() == userUpdateDto.UserName.ToLower());
 
                 // Se colocar True no parametro, ele bloqueia caso a senha não confira com a do usuário
                 // o ideal seria fazer um logica de N tentaivas, bloqeia. False não bloqeia
@@ -94,9 +94,11 @@ namespace ProEventos.Application
         {
             try
             {
-               var user =  await _userPersist.GetUserByUserName(userUpdateDto.Username);
+               var user =  await _userPersist.GetUserByUserName(userUpdateDto.UserName);
                
                if (user == null) return null ;
+
+               userUpdateDto.Id=user.Id;
 
                 // após encontrar, mapeia o user com os falores vindo do DTO
               
@@ -104,9 +106,10 @@ namespace ProEventos.Application
 
                 // GeneratePasswordResetTokenAsync foi usado para não deslogar o usuario na troca de senha
 
+            if(userUpdateDto.Password != null) {
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var result = await _userManager.ResetPasswordAsync(user, token, userUpdateDto.Password);
-
+            }
                 _userPersist.Update<User>(user);
 
                 if (await _userPersist.SaveChangesAsync())

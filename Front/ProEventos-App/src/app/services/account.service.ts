@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { User } from '@app/model/identity/User';
+import { UserUpdate } from '@app/model/identity/UserUpdate';
 import { environment } from '@enviroments/environment';
 import { Observable, ReplaySubject, map, take } from 'rxjs';
 
@@ -37,6 +38,22 @@ export class AccountService {
     );
   }
 
+  public getUser() : Observable<UserUpdate> {
+
+    return this.http.get<UserUpdate>(this.baseURL + 'getUser').pipe(take(1));
+  }
+
+ public updateUser(model: UserUpdate): Observable<void> {
+
+    return this.http.put<UserUpdate>(this.baseURL + 'updateUser', model).pipe(
+      take(1),
+      // Após atualizar o usuario, faz um map com os novos dados e seta como usuario atual
+      map((user : UserUpdate)=>{
+        this.setCurrentUser(user)
+      })
+    );
+  }
+
   public register(model: any): Observable<void> {
     return this.http.post<User>(this.baseURL + 'register', model).pipe(
       take(1),
@@ -65,4 +82,6 @@ export class AccountService {
     this.currentUserSource.next(user);
     console.log(this.currentUser$);
   }
+
+
 }

@@ -66,7 +66,7 @@ namespace ProEventos.API.Controllers
                 if (user != null)
                     return Ok(new
                                 {
-                                    userName = user.Username,
+                                    userName = user.UserName,
                                     PrimeiroNome = user.PrimeiroNome,
                                     token = _tokenService.CreateToken(user).Result
 
@@ -106,7 +106,7 @@ namespace ProEventos.API.Controllers
                 return Ok(
                     new
                     {
-                        userName = user.Username,
+                        userName = user.UserName,
                         PrimeiroNome = user.PrimeiroNome,
                         token = _tokenService.CreateToken(user).Result
 
@@ -129,6 +129,9 @@ namespace ProEventos.API.Controllers
         [HttpPut("UpdateUser")]
         public async Task<IActionResult> UpdateUser(UserUpdateDto userUpdateDto)
         {
+            // Verifica se o usuario passado é o mesmo que o usuario logado, com token.
+            if(userUpdateDto.UserName != User.GetUserName())
+            return Unauthorized("Usuário inválido");
 
             try
             { // User.GetUserName() Vem do metodo de extensão, pois só podemos atualizar um user com base no Token
@@ -140,7 +143,16 @@ namespace ProEventos.API.Controllers
 
                 if (userReturn == null) return NoContent();
 
-                return Ok(userReturn);
+                return Ok(
+                    new
+                    {
+                        userName = userReturn.UserName,
+                        PrimeiroNome = userReturn.PrimeiroNome,
+                        token = _tokenService.CreateToken(userReturn).Result
+
+                    }
+
+                );
 
 
             }
